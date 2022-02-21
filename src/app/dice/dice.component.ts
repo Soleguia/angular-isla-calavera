@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DiceEntity } from '../model/dice-entity';
+import { UtilsService } from '../services/utils.service';
 
 @Component({
   selector: 'app-dice',
@@ -18,18 +19,26 @@ export class DiceComponent implements OnInit {
     { name: 'Swords', face: this.path+'swords.svg'}
   ];
   currentDice:DiceEntity;
+  utils: UtilsService;
 
-  @Input()
-  dice:DiceEntity;
-
-  constructor() {
+  constructor(utilsService: UtilsService) {
+    this.utils = utilsService;
     this.currentDice = { name: 'Default', face: this.path+'dice.svg'};
   }
 
-  ngOnInit(): void {}
+  @Input()
+  face:number;
 
-  getDice():DiceEntity{
-    let face:number = parseInt( this.getRandom(0, 5).toFixed(0) );
+  ngOnInit(): void {
+    if( this.face > -1 ){
+      this.currentDice = this.diceFaces[this.face];
+    }
+  }
+
+  getDice(face:number):DiceEntity{
+    if( face > -1 ){
+      face = parseInt( this.utils.getRandom(0, 5).toFixed(0) );
+    }
     return this.diceFaces[face];
   }
 
@@ -37,7 +46,4 @@ export class DiceComponent implements OnInit {
     return { name: 'Dice', face: this.path+'dice.svg'};
   }
 
-  getRandom(min:number, max:number):number {
-    return Math.random() * (max - min) + min;
-  }
 }

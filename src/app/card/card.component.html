@@ -1,9 +1,9 @@
 <div class="card_wrapper">
   <div class="card">
-    <img *ngFor="let img of currentCard.face" [src]="img" [alt]="currentCard.name" [title]="currentCard.description" [class]="['card__image', currentCard.class]">
+    <img *ngFor="let img of showCard.face" [src]="img" [alt]="showCard.name" [title]="showCard.description" [class]="['card__image', showCard.class]">
   </div>
   <div class="card__description">
-    <h3>{{ currentCard.name }}</h3>
-    <p>{{ currentCard.description }}</p>
+    <h3>{{ showCard.name }}</h3>
+    <p>{{ showCard.description }}</p>
   </div>
 </div>

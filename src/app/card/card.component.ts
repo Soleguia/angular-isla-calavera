@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CardEntity } from '../model/card-entity';
 import { CardService } from '../services/card.service';
 import { DataService } from '../services/data.service';
@@ -10,14 +10,16 @@ import { DataService } from '../services/data.service';
 })
 export class CardComponent implements OnInit {
   data:DataService;
-  currentCard:CardEntity;
   cards:CardService;
+
 
   constructor(dataService:DataService, cardsData:CardService) {
     this.data = dataService;
     this.cards = cardsData;
-    this.currentCard = this.cards.currentCard
   }
+
+  @Input()
+  showCard:CardEntity;
 
   ngOnInit(): void {
   }
