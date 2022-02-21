@@ -1,0 +1,36 @@
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { PlayerEntity } from '../model/player-entity';
+import { DataService } from '../services/data.service';
+
+@Component({
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.scss']
+})
+export class GameComponent implements OnInit {
+
+  data:DataService;
+  playersData:PlayerEntity[] = [];
+  playersData$:Observable<PlayerEntity[]>;
+  gameOn:boolean;
+
+  constructor(dataService:DataService) {
+    this.data = dataService
+    this.gameOn = this.getGameStatus();
+  }
+
+  ngOnInit(): void {
+    this.playersData$ = this.data.getPlayers$();
+    this.playersData$.subscribe(playersData => this.playersData = playersData);
+  }
+
+  getGameStatus():boolean{
+    return this.data.gameOn;
+  }
+
+  setGameOn( isOn:boolean ){
+    this.data.setGameStatus(isOn);
+    this.gameOn = this.getGameStatus();
+  }
+}

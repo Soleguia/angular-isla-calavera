@@ -1,0 +1,21 @@
+<div [class]="{'game-board' : true, 'game-board--off' : !gameOn}">
+
+  <div class="game-board__points">
+    <app-points></app-points>
+  </div>
+
+  <div *ngIf="gameOn" class="game-board__cards">
+    <app-card></app-card>
+  </div>
+
+  <div *ngIf="gameOn" class="game-board__dice">
+    <app-dice *ngFor="let dice of dicePool" [dice]="dice"></app-dice>
+  </div>
+
+  <div *ngIf="gameOn" class="game-board__actions">
+    <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">Start</button>
+
+    <button *ngIf="gameData.round > 0" class="ic_button" (click)="roll()">Roll</button>
+    <button *ngIf="gameData.round > 0" class="ic_button" (click)="settleDown()">Settle down</button>
+  </div>
+</div>

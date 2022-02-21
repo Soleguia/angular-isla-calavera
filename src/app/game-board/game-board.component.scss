@@ -1,0 +1,48 @@
+.game-board {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  grid-template-rows: auto;
+  padding: 5vh 5vw;
+  padding: 2rem;
+  width: 800px;
+  max-width: 100%;
+
+  &--off {
+    .game-board__points {
+      grid-column: 1 / span 2;
+    }
+  }
+  &__points {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  &__cards {
+    grid-column:1;
+    grid-row: 2;
+  }
+  &__dice {
+    grid-column:2;
+    grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 5%;
+    padding: 1rem;
+  }
+  &__actions {
+    grid-column: 2;
+    grid-row: 3;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+  }
+  app-dice {
+    flex: 1 1 25%;
+    max-width: calc(25% - 5%);
+  }
+}
+

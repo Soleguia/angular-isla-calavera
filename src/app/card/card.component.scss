@@ -1,0 +1,99 @@
+.card_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.card {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 200px;
+  height: 300px;
+  background-color: rgba(200,200,200,.3);
+  border-radius: 1rem;
+  box-shadow: 1px 1px 2px 0px lightseagreen;
+  &__image {
+    display: block;
+    width: 100%;
+    object-fit: contain;
+
+    &[src*="swords.svg"] {
+      position: absolute;
+      top: 1rem;
+      width: 30px;
+      height: 30px;
+    }
+  }
+  &--monkey-parrot {
+    &[src*="monkey.svg"] {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 60%;
+      height: auto;
+    }
+    &[src*="parrot.svg"] {
+      position: absolute;
+      top: 50%;
+      left: 30%;
+      width: 60%;
+      height: auto;
+    }
+  }
+  &--double-skull {
+    &[src*="skull.svg"] {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 60%;
+      height: auto;
+    }
+    &[src*="skull.svg"]:nth-child(2) {
+      top: 50%;
+      left: 30%;
+    }
+  }
+  $swordsWidth: 30px;
+
+  &--ship-2 {
+    &[src*="swords.svg"]:nth-child(2) {
+      left: calc( ( 50% - $swordsWidth ) / 2 );
+    }
+    &[src*="swords.svg"]:nth-child(3) {
+      left: calc( 50% + (( 50% - $swordsWidth ) / 2 ));
+    }
+  }
+  &--ship-3 {
+    &[src*="swords.svg"]:nth-child(2) {
+      left: calc( ( 33% - $swordsWidth ) / 2 );
+    }
+    &[src*="swords.svg"]:nth-child(3) {
+      left: calc( 33% + (( 33% - $swordsWidth ) / 2 ));
+    }
+    &[src*="swords.svg"]:nth-child(4) {
+      left: calc( 66% + (( 33% - $swordsWidth ) / 2 ));
+    }
+  }
+  &--ship-4 {
+    &[src*="swords.svg"]:nth-child(2) {
+      left: calc( ( 25% - $swordsWidth ) / 2 );
+    }
+    &[src*="swords.svg"]:nth-child(3) {
+      left: calc( 25% + (( 25% - $swordsWidth ) / 2 ));
+    }
+    &[src*="swords.svg"]:nth-child(4) {
+      left: calc( 50% + (( 25% - $swordsWidth ) / 2 ));
+    }
+    &[src*="swords.svg"]:nth-child(5) {
+      left: calc( 75% + (( 25% - $swordsWidth ) / 2 ));
+    }
+  }
+}

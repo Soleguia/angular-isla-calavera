@@ -1,0 +1,8 @@
+
+  <app-add-players *ngIf="!gameOn"></app-add-players>
+
+  <app-game-board [gameOn]="gameOn"></app-game-board>
+
+  <div class="ic-button-start">
+    <button *ngIf="!gameOn && playersData.length > 1" (click)="setGameOn(true)" class="ic_button">Empezar partida</button>
+  </div>

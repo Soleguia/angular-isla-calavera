@@ -1,0 +1,14 @@
+.ic-button-start {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+.player {
+  &_item {
+    display: flex;
+  }
+  &__name,
+  &__points {
+    flex: 1 0 50%;
+  }
+}

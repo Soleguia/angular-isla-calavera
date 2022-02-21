@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+*,
+:before,
+:after {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.ic_button {
+  display: block;
+  width: 300px;
+  padding: 2rem;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  background-color: lightblue;
+  border: 1px solid lightblue;
+  border-radius: .5rem;
+}

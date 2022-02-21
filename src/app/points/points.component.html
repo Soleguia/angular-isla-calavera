@@ -1,0 +1,6 @@
+<ul *ngIf="playersData.length > 0" class="players_pointsboard">
+  <li *ngFor="let playerName of playersData; let i = index" [class]="{'player_item':true, 'player--active': currentPlayer == i}" id="player--{{i}}">
+      <span class="player__name">{{ playerName.name }}</span>
+      <span class="player__points">0</span>
+  </li>
+</ul>

@@ -1,0 +1,38 @@
+.ic-add-player {
+  display: block;
+  padding: 2rem;
+  width: 600px;
+  max-width: 100%;
+  background-color: rgba(200,200,200,.1);
+}
+.add-player {
+    &__label,
+    &__input,
+    &__button {
+        display: block;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+    &__label {
+        text-transform: uppercase;
+    }
+    &__input {
+        padding: .5rem 1.5rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        background-color: white;
+        border: 0;
+        border-bottom: 1px solid lightgray;
+        &:focus {
+            outline: 0;
+            background-color: rgba(100,100,100,.05);
+        }
+    }
+    &__button {
+        padding: .5rem 1.5rem;
+        font-weight: 600;
+        background-color: lightcyan;
+        border: 1px solid lightslategray;
+        border-radius: .5rem;
+    }
+}

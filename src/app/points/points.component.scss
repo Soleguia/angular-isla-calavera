@@ -1,0 +1,23 @@
+.players_pointsboard {
+  padding: 0;
+  list-style: none;
+}
+.player {
+  &_item {
+    display: flex;
+    border-bottom: 1px solid lightgrey;
+  }
+  &__name,
+  &__points {
+    flex: 1 0 50%;
+    display: block;
+    padding: .5rem 1rem;
+  }
+  &__name {}
+  &__points {
+    text-align: right;
+  }
+  &--active {
+    background-color: lightskyblue;
+  }
+}
