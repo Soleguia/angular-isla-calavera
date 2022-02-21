@@ -5,11 +5,15 @@
   </div>
 
   <div *ngIf="gameOn" class="game-board__cards">
-    <app-card></app-card>
+    <app-card [showCard]="currentCard"></app-card>
   </div>
 
   <div *ngIf="gameOn" class="game-board__dice">
-    <app-dice *ngFor="let dice of dicePool" [dice]="dice"></app-dice>
+    <app-dice *ngFor="let face of dicePool" [face]="face"></app-dice>
+  </div>
+
+  <div *ngIf="gameOn" class="game-board__rounds">
+    <p>Round: {{ gameData.round }}</p>
   </div>
 
   <div *ngIf="gameOn" class="game-board__actions">
