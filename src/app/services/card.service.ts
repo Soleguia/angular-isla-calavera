@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
 import { CardEntity } from '../model/card-entity';
-import { DataService } from './data.service';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardService {
 
+  private utils:UtilsService;
+  private cardsDeck:string[] = [];
   public currentCard:CardEntity;
   private path = 'assets/cards/';
+  public cardDefault = {
+    id: 'default',
+    amount: 0,
+    name: 'Welcome to Skull Island',
+    face: [this.path+'island-map.svg'],
+    description: "Let's play!",
+    class: 'card--default'
+  };
   private cardsFaces = [
     {
       id: 'coin',
@@ -100,26 +110,14 @@ export class CardService {
     }
   ];
 
-  private cardsDeck:string[] = [];
-  private data:DataService;
-
-  constructor(dataService:DataService) {
-    this.data = dataService;
+  constructor(utilsService:UtilsService) {
+    this.utils = utilsService;
     this.cardsDeck = this.setCardsDeck();
-    this.currentCard = {
-      id: 'default',
-      amount: 0,
-      name: 'Welcome to Skull Island',
-      face: [this.path+'island-map.svg'],
-      description: "Let's play!",
-      class: 'card--default'
-    };
-
+    this.currentCard = this.cardsFaces[0];
   }
 
-
   getCard():any{
-    let card:number = parseInt( this.data.getRandom(0, this.cardsDeck.length).toFixed(0) );
+    let card:number = parseInt( this.utils.getRandom(0, this.cardsDeck.length).toFixed(0) );
     return this.cardsFaces.find( face => face.id == this.cardsDeck[card] );
   }
 
@@ -136,4 +134,5 @@ export class CardService {
     });
     return deck;
   }
+
 }

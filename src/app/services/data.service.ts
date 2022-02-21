@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
-import { CardEntity } from '../model/card-entity';
 import { GameDataEntity } from '../model/game-data-entity';
 import { PlayerEntity } from '../model/player-entity';
+import { CardService } from './card.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +13,30 @@ export class DataService {
   private showContent:string = '';
   public players:PlayerEntity[] = [];
   private playersData$:Subject<PlayerEntity[]> = new Subject<PlayerEntity[]>();
+
   public gameOn:boolean = false;
-  public dicePool = new Array(8);
+
+  public cardService: CardService;
+
+  public poolSize:number = 8;
+  public dicePool = new Array(this.poolSize);
+
+  public gameRegistry:GameDataEntity[] = [];
   public gameData:GameDataEntity;
-  private gameData$:Subject<GameDataEntity[]> = new Subject<GameDataEntity[]>();
+  private gameData$:Subject<GameDataEntity> = new Subject<GameDataEntity>();
 
 
-  constructor() {
+  constructor( cardService:CardService ) {
+    this.cardService = cardService;
     this.gameData = {
       round: 0,
       player: 0,
+      card: this.cardService.cardDefault,
       throws: []
     }
+    this.dicePool = [-1, -1, -1, -1, -1, -1, -1, -1];
+
+
   }
 
   getShowContent():string {
@@ -48,17 +60,42 @@ export class DataService {
     return this.playersData$.asObservable();
   }
 
+  getGameData$():Observable<GameDataEntity> {
+    return this.gameData$.asObservable();
+  }
+
   setGameStatus(isOn:boolean){
     this.gameOn = isOn;
   }
 
-  getRandom(min:number, max:number):number {
-    return Math.random() * (max - min) + min;
+  getRound():number{
+    return this.gameData.round;
   }
 
-  nextRound(){
+  firstRound(){
     this.gameData.round++;
-
   }
+  nextRound(){
+    this.nextPlayer();
+    this.setThrow( this.gameData );
+  }
+
+  nextPlayer(){
+    let player = this.gameData.player + 1;
+    if( player == this.players.length ){
+      this.gameData.player = 0;
+      this.gameData.round++;
+    } else {
+      this.gameData.player = player;
+    }
+    this.gameData$.next(this.gameData);
+  }
+
+  setThrow( gameData:GameDataEntity ){
+    this.gameData = gameData;
+    this.gameData$.next(this.gameData);
+    this.gameRegistry.push( this.gameData );
+  }
+
 
 }
