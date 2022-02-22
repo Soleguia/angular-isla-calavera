@@ -34,6 +34,7 @@ export class DataService {
     this.gameData = {
       round: 0,
       player: 0,
+      lastPlayer: 0,
       card: this.cards.cardDefault,
       throws: []
     }

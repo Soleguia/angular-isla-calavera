@@ -44,12 +44,7 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
-  // First play
-  firstRoll():void {
-    this.data.firstRound();
-    this.revealCard();
-    this.roll();
-  }
+  
 
   defaultCard():void {
     this.currentCard = this.cards.cardDefault;
@@ -61,12 +56,25 @@ export class GameBoardComponent implements OnInit {
     this.gameData.card = this.currentCard;
   }
 
-  roll() {
+  // First play
+  firstRoll():void {
+    this.data.firstRound();
+    this.revealCard();
+    this.roll(this.gameData.player, this.gameData.lastPlayer);
+  }
+
+  newPlayerRoll( player:number, lastPlayer:number ) {
+    this.revealCard();
+    this.roll( player, lastPlayer )
+  }
+  
+  roll( player:number, lastPlayer:number ) {
     this.dicePool = this.dice.randomDicePool();
 
     this.data.setThrow({
       round: this.gameData.round,
-      player: this.gameData.player,
+      player: player,
+      lastPlayer: lastPlayer,
       card: this.gameData.card,
       throws: [ ...this.gameData.throws, {
         round: this.gameData.round,
