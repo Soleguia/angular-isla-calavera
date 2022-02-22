@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
+import { DiceEntity } from '../model/dice-entity';
 import { GameDataEntity } from '../model/game-data-entity';
 import { PlayerEntity } from '../model/player-entity';
 import { CardService } from './card.service';
+import { DiceService } from './dice.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,25 +18,26 @@ export class DataService {
 
   public gameOn:boolean = false;
 
-  public cardService: CardService;
+  public dice: DiceService;
+  public cards: CardService;
 
-  public poolSize:number = 8;
-  public dicePool = new Array(this.poolSize);
+  public dicePool:DiceEntity[];
 
   public gameRegistry:GameDataEntity[] = [];
   public gameData:GameDataEntity;
   private gameData$:Subject<GameDataEntity> = new Subject<GameDataEntity>();
 
 
-  constructor( cardService:CardService ) {
-    this.cardService = cardService;
+  constructor( diceService:DiceService, cardService:CardService ) {
+    this.cards = cardService;
+    this.dice = diceService;
     this.gameData = {
       round: 0,
       player: 0,
-      card: this.cardService.cardDefault,
+      card: this.cards.cardDefault,
       throws: []
     }
-    this.dicePool = [-1, -1, -1, -1, -1, -1, -1, -1];
+    this.dicePool = this.dice.defaultDicePool();
 
 
   }

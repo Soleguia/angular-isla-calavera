@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CardEntity } from '../model/card-entity';
+import { DiceEntity } from '../model/dice-entity';
 import { GameDataEntity } from '../model/game-data-entity';
 import { CardService } from '../services/card.service';
 import { DataService } from '../services/data.service';
+import { DiceService } from '../services/dice.service';
 import { UtilsService } from '../services/utils.service';
 
 @Component({
@@ -14,8 +16,9 @@ import { UtilsService } from '../services/utils.service';
 export class GameBoardComponent implements OnInit {
   data:DataService;
   cards:CardService;
+  dice:DiceService;
   currentCard:CardEntity;
-  dicePool;
+  dicePool:DiceEntity[];
   gameData: GameDataEntity;
   gameData$:Observable<GameDataEntity>;
   utils: UtilsService;
@@ -24,9 +27,10 @@ export class GameBoardComponent implements OnInit {
   gameOn:boolean;
 
 
-  constructor(utilsService: UtilsService, dataService:DataService, cardsData:CardService) {
+  constructor(utilsService: UtilsService, dataService:DataService, diceService:DiceService, cardsData:CardService) {
     this.utils = utilsService;
     this.data = dataService;
+    this.dice = diceService;
     this.cards = cardsData;
     this.currentCard = this.cards.cardDefault;
     this.dicePool = this.data.dicePool;
@@ -37,7 +41,6 @@ export class GameBoardComponent implements OnInit {
     this.gameData$ = this.data.getGameData$();
     this.gameData$.subscribe(gameData => {
       this.gameData = gameData;
-      this.dicePool = this.gameData.throws;
     });
   }
 
@@ -48,31 +51,36 @@ export class GameBoardComponent implements OnInit {
     this.roll();
   }
 
+  defaultCard():void {
+    this.currentCard = this.cards.cardDefault;
+    this.gameData.card = this.currentCard;
+  }
+
   revealCard():void {
     this.currentCard = this.cards.getCard();
     this.gameData.card = this.currentCard;
   }
 
   roll() {
-    let dicePool = [];
-    for( let d = 0; d < this.data.poolSize; d++ ){
-      dicePool.push( this.utils.getRandom(0, 5) );
-    }
-    this.dicePool = dicePool;
+    this.dicePool = this.dice.randomDicePool();
 
     this.data.setThrow({
       round: this.gameData.round,
       player: this.gameData.player,
       card: this.gameData.card,
-      throws: this.dicePool
+      throws: [ ...this.gameData.throws, {
+        round: this.gameData.round,
+        player: this.gameData.player,
+        diceRoll: this.dicePool
+      } ]
     });
 
   }
 
   settleDown(){
     this.data.nextRound();
-    this.revealCard();
-
+    this.defaultCard();
+    this.dicePool = this.dice.defaultDicePool();
   }
 
 }
