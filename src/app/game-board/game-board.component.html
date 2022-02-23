@@ -22,7 +22,7 @@
     {{ gameData | json }}
     <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">Start</button>
 
-    <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="newPlayerRoll(gameData.player, gameData.player)">Roll New Player</button>
+    <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll(gameData.player, gameData.player)">Next Player Roll</button>
     <button *ngIf="gameData.round > 0 && gameData.player === gameData.lastPlayer" class="ic_button" (click)="roll(gameData.player, gameData.lastPlayer)">Roll</button>
 
     <button *ngIf="gameData.round > 0" class="ic_button" (click)="settleDown()">Settle down</button>

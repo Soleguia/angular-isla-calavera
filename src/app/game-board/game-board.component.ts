@@ -63,7 +63,7 @@ export class GameBoardComponent implements OnInit {
     this.roll(this.gameData.player, this.gameData.lastPlayer);
   }
 
-  newPlayerRoll( player:number, lastPlayer:number ) {
+  nextPlayerRoll( player:number, lastPlayer:number ) {
     this.revealCard();
     this.roll( player, lastPlayer )
   }
