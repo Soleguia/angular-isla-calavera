@@ -82,6 +82,7 @@ export class GameBoardComponent implements OnInit {
       lastPlayer: lastPlayer,
       card: this.gameData.card,
       skulls: this.gameData.skulls,
+      skullIsland: this.gameData.skullIsland,
       lockedDice: this.gameData.lockedDice,
       throws: [ ...this.gameData.throws, {
         round: this.gameData.round,
@@ -112,6 +113,7 @@ export class GameBoardComponent implements OnInit {
 
     if( totalSkulls >= 4 ){
       console.log( 'Welcome to Skull Island!!' );
+      this.data.gameData.skullIsland = true;
     } else {
       console.log( 'No Skull Island... this time.');
     }

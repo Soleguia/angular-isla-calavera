@@ -36,6 +36,7 @@ export class DataService {
       lastPlayer: 0,
       card: this.cards.cardDefault,
       skulls: 0,
+      skullIsland: false,
       lockedDice: [],
       throws: []
     }
@@ -92,6 +93,7 @@ export class DataService {
     } else {
       this.gameData.player = player;
     }
+    this.gameData.skullIsland = false;
     this.gameData$.next(this.gameData);
   }
 

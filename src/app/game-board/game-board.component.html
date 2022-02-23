@@ -16,10 +16,11 @@
     <p>Round: {{ gameData.round }}</p>
     <p>Player: {{ gameData.player }}</p>
     <p>Last Player: {{ gameData.lastPlayer }}</p>
+    <p>Skull Island: {{ gameData.skullIsland }}</p>
   </div>
 
   <div *ngIf="gameOn" class="game-board__actions">
-    {{ gameData | json }}
+    <!-- {{ gameData | json }} -->
     <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">Start</button>
 
     <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll(gameData.player, gameData.player)">Next Player Roll</button>
