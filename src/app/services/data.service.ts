@@ -27,7 +27,6 @@ export class DataService {
   public gameData:GameDataEntity;
   private gameData$:Subject<GameDataEntity> = new Subject<GameDataEntity>();
 
-
   constructor( diceService:DiceService, cardService:CardService ) {
     this.cards = cardService;
     this.dice = diceService;
@@ -36,10 +35,11 @@ export class DataService {
       player: 0,
       lastPlayer: 0,
       card: this.cards.cardDefault,
+      skulls: 0,
+      lockedDice: [],
       throws: []
     }
     this.dicePool = this.dice.defaultDicePool();
-
 
   }
 

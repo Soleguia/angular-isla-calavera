@@ -6,6 +6,8 @@ export interface GameDataEntity {
   lastPlayer: number,
   player: number,
   card: CardEntity,
+  skulls:number,
+  lockedDice: DiceEntity[],
   throws: ThrowEntity[]
 }
 
