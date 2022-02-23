@@ -44,7 +44,7 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
-  
+
 
   defaultCard():void {
     this.currentCard = this.cards.cardDefault;
@@ -61,24 +61,28 @@ export class GameBoardComponent implements OnInit {
     this.data.firstRound();
     this.revealCard();
     this.roll(this.gameData.player, this.gameData.lastPlayer);
+
+    this.checkSkullIsland( this.dicePool );
   }
 
   nextPlayerRoll( player:number, lastPlayer:number ) {
     this.revealCard();
-    this.roll( player, lastPlayer )
+    this.roll( player, lastPlayer );
+    this.checkSkullIsland( this.dicePool );
   }
-  
+
   roll( player:number, lastPlayer:number ) {
     this.dicePool = this.dice.randomDicePool();
-    
-    // To Do : pasar cantidad de dados para la tirada
-    // To Do : unir resultado con dados bloqueados para formar el nuevo dicePool
-    
+
+    this.checkRoll( this.dicePool );
+
     this.data.setThrow({
       round: this.gameData.round,
       player: player,
       lastPlayer: lastPlayer,
       card: this.gameData.card,
+      skulls: this.gameData.skulls,
+      lockedDice: this.gameData.lockedDice,
       throws: [ ...this.gameData.throws, {
         round: this.gameData.round,
         player: this.gameData.player,
@@ -86,6 +90,31 @@ export class GameBoardComponent implements OnInit {
       } ]
     });
 
+  }
+
+  checkRoll( roll:DiceEntity[] ){
+    roll.forEach( dice => {
+      console.log({dice})
+      if( dice.name == 'Skull' ){
+
+      }
+    })
+  }
+
+  checkSkullIsland( roll:DiceEntity[] ){
+    let totalSkulls = roll.filter( dice => dice.name == 'Skull' ).length;
+    if( this.data.gameData.card.name == 'Skull' ){
+      totalSkulls += 1;
+    }
+    if( this.data.gameData.card.name == 'Double Skull' ){
+      totalSkulls += 2;
+    }
+
+    if( totalSkulls >= 4 ){
+      console.log( 'Welcome to Skull Island!!' );
+    } else {
+      console.log( 'No Skull Island... this time.');
+    }
   }
 
   settleDown(){
