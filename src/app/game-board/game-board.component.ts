@@ -70,7 +70,10 @@ export class GameBoardComponent implements OnInit {
   
   roll( player:number, lastPlayer:number ) {
     this.dicePool = this.dice.randomDicePool();
-
+    
+    // To Do : pasar cantidad de dados para la tirada
+    // To Do : unir resultado con dados bloqueados para formar el nuevo dicePool
+    
     this.data.setThrow({
       round: this.gameData.round,
       player: player,
