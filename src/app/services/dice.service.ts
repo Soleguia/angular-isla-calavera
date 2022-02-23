@@ -6,7 +6,7 @@ import { UtilsService } from './utils.service';
   providedIn: 'root'
 })
 export class DiceService {
-  
+
   utils:UtilsService;
 
   poolSize:number = 8;
@@ -25,17 +25,17 @@ export class DiceService {
     this.utils = utilsService;
   }
 
-  defaultDicePool():DiceEntity[] {
+  defaultDicePool( poolSize:number=this.poolSize ):DiceEntity[] {
     let dicePool = [];
-    for( let d = 0; d < this.poolSize; d++ ){
+    for( let d = 0; d < poolSize; d++ ){
       dicePool.push( this.defaultDice );
     }
     return dicePool;
   }
 
-  randomDicePool():DiceEntity[] {
+  randomDicePool( poolSize:number=this.poolSize ):DiceEntity[] {
     let dicePool = [];
-    for( let d = 0; d < this.poolSize; d++ ){
+    for( let d = 0; d < poolSize; d++ ){
       let face = this.utils.getRandom(0, 5);
       let dice = this.diceFaces[face]
       dicePool.push( dice );
