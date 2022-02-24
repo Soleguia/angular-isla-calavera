@@ -76,6 +76,10 @@ export class GameBoardComponent implements OnInit {
 
     this.checkRoll( this.dicePool );
 
+    if( this.roundOver( this.dicePool ) ){
+      // this.settleDown()
+    }
+
     this.data.setThrow({
       round: this.gameData.round,
       player: player,
@@ -102,14 +106,23 @@ export class GameBoardComponent implements OnInit {
     })
   }
 
-  checkSkullIsland( roll:DiceEntity[] ){
-    let totalSkulls = roll.filter( dice => dice.name == 'Skull' ).length;
+  countSkullCards() {
     if( this.data.gameData.card.name == 'Skull' ){
-      totalSkulls += 1;
+      return 1;
     }
     if( this.data.gameData.card.name == 'Double Skull' ){
-      totalSkulls += 2;
+      return 2;
     }
+    return 0;
+  }
+
+  countSkullDice( dicePool:DiceEntity[] ) {
+    return dicePool.filter( dice => dice.name == 'Skull' ).length;
+  }
+
+  checkSkullIsland( roll:DiceEntity[] ){
+    let totalSkulls = this.countSkullDice( roll );
+    totalSkulls += this.countSkullCards();
 
     if( totalSkulls >= 4 ){
       console.log( 'Welcome to Skull Island!!' );
@@ -117,6 +130,15 @@ export class GameBoardComponent implements OnInit {
     } else {
       console.log( 'No Skull Island... this time.');
     }
+  }
+
+  roundOver( dicePool:DiceEntity[] ) {
+    let totalSkulls = this.countSkullDice( dicePool );
+    totalSkulls += this.countSkullCards();
+    if( totalSkulls >= 3 ){
+      return true;
+    }
+    return false;
   }
 
   settleDown(){
