@@ -44,8 +44,6 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
-
-
   defaultCard():void {
     this.currentCard = this.cards.cardDefault;
     this.gameData.card = this.currentCard;
@@ -58,20 +56,21 @@ export class GameBoardComponent implements OnInit {
 
   // First play
   firstRoll():void {
-    this.data.firstRound();
+    this.data.addRound();
     this.revealCard();
-    this.roll(this.gameData.player, this.gameData.lastPlayer);
+    this.roll();
 
+    this.checkSkullIsland( this.dicePool );
+
+  }
+
+  nextPlayerRoll() {
+    this.revealCard();
+    this.roll();
     this.checkSkullIsland( this.dicePool );
   }
 
-  nextPlayerRoll( player:number, lastPlayer:number ) {
-    this.revealCard();
-    this.roll( player, lastPlayer );
-    this.checkSkullIsland( this.dicePool );
-  }
-
-  roll( player:number, lastPlayer:number ) {
+  roll() {
     this.dicePool = this.dice.randomDicePool();
 
     this.checkRoll( this.dicePool );
@@ -82,8 +81,8 @@ export class GameBoardComponent implements OnInit {
 
     this.data.setThrow({
       round: this.gameData.round,
-      player: player,
-      lastPlayer: lastPlayer,
+      player: this.gameData.player,
+      lastPlayer: this.gameData.lastPlayer,
       card: this.gameData.card,
       skulls: this.gameData.skulls,
       skullIsland: this.gameData.skullIsland,

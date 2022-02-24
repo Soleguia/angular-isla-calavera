@@ -77,7 +77,7 @@ export class DataService {
     return this.gameData.round;
   }
 
-  firstRound(){
+  addRound(){
     this.gameData.round++;
   }
   nextRound(){
@@ -86,10 +86,13 @@ export class DataService {
   }
 
   nextPlayer(){
+    // current player turns into last player
+    this.gameData.lastPlayer = this.gameData.player;
+
     let player = this.gameData.player + 1;
-    if( player == this.players.length ){
+    if( player >= this.players.length ){
       this.gameData.player = 0;
-      this.gameData.round++;
+      this.addRound();
     } else {
       this.gameData.player = player;
     }
@@ -103,5 +106,10 @@ export class DataService {
     this.gameRegistry.push( this.gameData );
   }
 
+  playerCanSettleDown():number {
+    let player = this.gameData.player;
+    let round = this.gameData.round;
+    return this.gameData.throws.filter( throwData => throwData.player == player && throwData.round == round ).length;
+  }
 
 }
