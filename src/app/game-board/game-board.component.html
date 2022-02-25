@@ -17,6 +17,7 @@
     <p>Player: {{ gameData.player }}</p>
     <p>Last Player: {{ gameData.lastPlayer }}</p>
     <p>Skull Island: {{ gameData.skullIsland }}</p>
+    <p>Round Over: {{ gameData.roundOver }}</p>
     <p>DicePool: {{ gameData.lockedDice | json }}</p>
   </div>
 
@@ -26,8 +27,19 @@
 
     <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll()">Next Player Roll</button>
 
-    <button *ngIf="gameData.round > 0 && gameData.player === gameData.lastPlayer" class="ic_button" (click)="roll()">Roll</button>
+    <button *ngIf="data.playerCanRoll()" class="ic_button" (click)="roll()">
+      <span *ngIf="gameData.skullIsland; else elseBlock">
+        Roll for Skull Island
+      </span>
+      <ng-template #elseBlock>Roll</ng-template>
 
-    <button *ngIf="data.playerCanSettleDown()" class="ic_button" (click)="settleDown()">Settle down</button>
+    </button>
+
+    <button *ngIf="! gameData.skullIsland && data.playerCanSettleDown()" class="ic_button" (click)="settleDown()">
+      <span *ngIf="gameData.roundOver; else elseBlock">
+        Too much Skulls! Round over!
+      </span>
+      <ng-template #elseBlock>Settle down</ng-template>
+    </button>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { DiceEntity } from "./dice-entity";
 
 export interface GameDataEntity {
   round: number,
+  roundOver: boolean,
   lastPlayer: number,
   player: number,
   card: CardEntity,

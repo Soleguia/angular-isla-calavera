@@ -32,6 +32,7 @@ export class DataService {
     this.dice = diceService;
     this.gameData = {
       round: 0,
+      roundOver: false,
       player: 0,
       lastPlayer: 0,
       card: this.cards.cardDefault,
@@ -97,6 +98,7 @@ export class DataService {
       this.gameData.player = player;
     }
     this.gameData.skullIsland = false;
+    this.gameData.roundOver = false;
     this.gameData.lockedDice = [];
     this.gameData$.next(this.gameData);
   }
@@ -107,6 +109,16 @@ export class DataService {
     this.gameRegistry.push( this.gameData );
   }
 
+  enoughPoolSize():boolean {
+    if( this.dice.poolSize - this.gameData.lockedDice.length > 1 ){
+      return true;
+    }
+    return false;
+  }
+
+  playerCanRoll():boolean {
+    return this.enoughPoolSize() && this.gameData.round > 0 && this.gameData.player === this.gameData.lastPlayer && !this.gameData.roundOver;
+  }
   playerCanSettleDown():number {
     let player = this.gameData.player;
     let round = this.gameData.round;
