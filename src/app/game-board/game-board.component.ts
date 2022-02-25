@@ -86,10 +86,13 @@ export class GameBoardComponent implements OnInit {
     // you need at least 2 dice for keep rolling
     if( currentPoolSize >= 2 ){
       let roll = this.dice.randomDicePool( currentPoolSize );
-      this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
-
-      this.setLockedDice();
-
+      // if Skull Island but rolls no skulls
+      if( this.gameData.skullIsland && ! roll.some( dice => dice.name == 'Skull' ) ){
+        this.gameData.roundOver = true;
+      } else {
+        this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
+        this.setLockedDice();
+      }
       this.data.setThrow({
         round: this.gameData.round,
         roundOver: this.gameData.roundOver,
