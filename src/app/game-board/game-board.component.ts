@@ -54,24 +54,39 @@ export class GameBoardComponent implements OnInit {
     this.gameData.card = this.currentCard;
   }
 
-  // First play
+  // Game's first roll
   firstRoll():void {
     this.data.addRound();
     this.revealCard();
-    this.roll();
+    this.roll(); // full dicepool
 
     this.checkSkullIsland( this.dicePool );
 
+    this.refreshDicePool();
   }
 
+  // Player round's first roll
   nextPlayerRoll() {
     this.revealCard();
-    this.roll();
+    this.roll(); // full dicepool
+    this.gameData.lastPlayer = this.gameData.player;
     this.checkSkullIsland( this.dicePool );
+
+    this.refreshDicePool();
+  }
+
+  refreshDicePool(){
+    //
+    let skulls = this.dicePool.filter( dice => dice.name == 'Skull' )
+    this.gameData.lockedDice = [ ...skulls ];
   }
 
   roll() {
-    this.dicePool = this.dice.randomDicePool();
+    let currentPoolSize = this.dice.poolSize - this.gameData.lockedDice.length;
+    let roll = this.dice.randomDicePool( currentPoolSize );
+    this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
+
+    this.refreshDicePool();
 
     this.checkRoll( this.dicePool );
 
@@ -141,9 +156,13 @@ export class GameBoardComponent implements OnInit {
   }
 
   settleDown(){
+    this.data.nextPlayer();
     this.data.nextRound();
     this.defaultCard();
     this.dicePool = this.dice.defaultDicePool();
   }
 
+  lockDice( dice:DiceEntity) {
+    this.gameData.lockedDice.push( dice );
+  }
 }

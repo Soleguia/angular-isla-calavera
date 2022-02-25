@@ -81,8 +81,8 @@ export class DataService {
     this.gameData.round++;
   }
   nextRound(){
-    this.nextPlayer();
     this.setThrow( this.gameData );
+
   }
 
   nextPlayer(){
@@ -97,6 +97,7 @@ export class DataService {
       this.gameData.player = player;
     }
     this.gameData.skullIsland = false;
+    this.gameData.lockedDice = [];
     this.gameData$.next(this.gameData);
   }
 
