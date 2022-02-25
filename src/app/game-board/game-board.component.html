@@ -37,7 +37,7 @@
 
     <button *ngIf="! gameData.skullIsland && data.playerCanSettleDown()" class="ic_button" (click)="settleDown()">
       <span *ngIf="gameData.roundOver; else elseBlock">
-        Too Skulls! Round over!
+        Too much Skulls! Round over!
       </span>
       <ng-template #elseBlock>Settle down</ng-template>
     </button>
