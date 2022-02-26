@@ -73,15 +73,33 @@ export class GameBoardComponent implements OnInit {
     this.checkSkullIslandOrRoundOver();
   }
 
+  currentPoolSize():number {
+    return this.dice.poolSize - this.gameData.lockedDice.length;
+  }
+
   playerRoll(){
-    let roll = this.roll();
-    let rolledSkulls = roll.filter( dice => dice.name == 'Skull' ).length;
-    if( this.gameData.skullIsland ){
-      if( rolledSkulls < 1 ){
-        this.gameData.roundOver = true;
+    let currentPoolSize = this.currentPoolSize();
+
+    // you need at least 2 dice for keep rolling
+    if( currentPoolSize >= 2 ){
+      let roll = this.roll( currentPoolSize );
+
+      if( this.gameData.skullIsland ){
+        currentPoolSize = this.currentPoolSize();
+        let rolledSkulls = roll.filter( dice => dice.name == 'Skull' ).length;
+        if( rolledSkulls < 1 || currentPoolSize < 2 ){
+          this.gameData.roundOver = true;
+          this.roundOverOnSkullIsland()
+        }
+      } else {
+        this.gameData.roundOver = this.isRoundOver();
       }
+
     } else {
-      this.gameData.roundOver = this.isRoundOver();
+      if( this.gameData.skullIsland ){
+        this.gameData.roundOver = true;
+        this.roundOverOnSkullIsland()
+      }
     }
   }
 
@@ -90,12 +108,8 @@ export class GameBoardComponent implements OnInit {
     this.gameData.lockedDice = [ ...skulls ];
   }
 
-  roll():DiceEntity[] {
-    let currentPoolSize = this.dice.poolSize - this.gameData.lockedDice.length;
-
-    // you need at least 2 dice for keep rolling
-    if( currentPoolSize >= 2 ){
-      let roll = this.dice.randomDicePool( currentPoolSize );
+  roll( poolSize:number = this.dice.poolSize ):DiceEntity[] {
+      let roll = this.dice.randomDicePool( poolSize );
       this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
       this.setLockedDice();
 
@@ -115,10 +129,6 @@ export class GameBoardComponent implements OnInit {
         } ]
       });
       return roll;
-    } else {
-      // To Do: Not enough dice!!
-      return [];
-    }
   }
 
   countSkullCards():number {
@@ -140,10 +150,7 @@ export class GameBoardComponent implements OnInit {
     totalSkulls += this.countSkullCards();
 
     if( totalSkulls >= 4 ){
-      console.log( 'Welcome to Skull Island!!' );
       return true;
-    } else {
-      console.log( 'No Skull Island... this time.');
     }
     return false;
   }
@@ -157,6 +164,20 @@ export class GameBoardComponent implements OnInit {
     return false;
   }
 
+  roundOverOnSkullIsland(){
+    if( this.gameData.skullIsland ){
+      let skulls = this.countSkullCards() + this.countSkullDice( this.gameData.lockedDice );
+      if( this.gameData.card.name == 'Pirate' ){
+        skulls *= 2;
+      }
+      this.data.players.map( (player, id) => {
+        if( this.gameData.player != id ){
+          player.points += skulls * -100;
+          console.log( {skulls} )
+        }
+      } )
+    }
+  }
   checkSkullIslandOrRoundOver():void {
     if( this.isSkullIsland( this.dicePool ) ){
       this.data.gameData.skullIsland = true;
