@@ -27,7 +27,7 @@
 
     <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll()">Next Player Roll</button>
 
-    <button *ngIf="data.playerCanRoll()" class="ic_button" (click)="roll()">
+    <button *ngIf="data.playerCanRoll()" class="ic_button" (click)="playerRoll()">
       <span *ngIf="gameData.skullIsland; else elseBlock">
         Roll for Skull Island
       </span>

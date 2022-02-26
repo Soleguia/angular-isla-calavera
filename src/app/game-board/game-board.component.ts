@@ -62,7 +62,6 @@ export class GameBoardComponent implements OnInit {
 
     this.checkSkullIslandOrRoundOver();
 
-    this.setLockedDice();
   }
 
   // Player round's first roll
@@ -72,8 +71,18 @@ export class GameBoardComponent implements OnInit {
     this.gameData.lastPlayer = this.gameData.player;
 
     this.checkSkullIslandOrRoundOver();
+  }
 
-    this.setLockedDice();
+  playerRoll(){
+    let roll = this.roll();
+    let rolledSkulls = roll.filter( dice => dice.name == 'Skull' ).length;
+    if( this.gameData.skullIsland ){
+      if( rolledSkulls < 1 ){
+        this.gameData.roundOver = true;
+      }
+    } else {
+      this.gameData.roundOver = this.isRoundOver();
+    }
   }
 
   setLockedDice(){
@@ -81,18 +90,15 @@ export class GameBoardComponent implements OnInit {
     this.gameData.lockedDice = [ ...skulls ];
   }
 
-  roll() {
+  roll():DiceEntity[] {
     let currentPoolSize = this.dice.poolSize - this.gameData.lockedDice.length;
+
     // you need at least 2 dice for keep rolling
     if( currentPoolSize >= 2 ){
       let roll = this.dice.randomDicePool( currentPoolSize );
-      // if Skull Island but rolls no skulls
-      if( this.gameData.skullIsland && ! roll.some( dice => dice.name == 'Skull' ) ){
-        this.gameData.roundOver = true;
-      } else {
-        this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
-        this.setLockedDice();
-      }
+      this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
+      this.setLockedDice();
+
       this.data.setThrow({
         round: this.gameData.round,
         roundOver: this.gameData.roundOver,
@@ -108,6 +114,10 @@ export class GameBoardComponent implements OnInit {
           diceRoll: this.dicePool
         } ]
       });
+      return roll;
+    } else {
+      // To Do: Not enough dice!!
+      return [];
     }
   }
 
@@ -125,7 +135,7 @@ export class GameBoardComponent implements OnInit {
     return dicePool.filter( dice => dice.name == 'Skull' ).length;
   }
 
-  checkSkullIsland( roll:DiceEntity[] ):boolean {
+  isSkullIsland( roll:DiceEntity[] ):boolean {
     let totalSkulls = this.countSkullDice( roll );
     totalSkulls += this.countSkullCards();
 
@@ -138,7 +148,7 @@ export class GameBoardComponent implements OnInit {
     return false;
   }
 
-  roundOver(){
+  isRoundOver():boolean {
     let skulls = this.countSkullCards();
     let lockedSkulls = this.gameData.lockedDice.filter( dice => dice.name == 'Skull' ).length;
     if( skulls + lockedSkulls > 2 ){
@@ -148,10 +158,10 @@ export class GameBoardComponent implements OnInit {
   }
 
   checkSkullIslandOrRoundOver():void {
-    if( this.checkSkullIsland( this.dicePool ) ){
+    if( this.isSkullIsland( this.dicePool ) ){
       this.data.gameData.skullIsland = true;
     } else {
-      this.gameData.roundOver = this.roundOver();
+      this.gameData.roundOver = this.isRoundOver();
     }
   }
 
