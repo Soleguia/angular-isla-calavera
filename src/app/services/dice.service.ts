@@ -8,7 +8,7 @@ import { UtilsService } from './utils.service';
 export class DiceService {
 
   utils:UtilsService;
-
+  totalDices:number;
   poolSize:number = 8;
   path = 'assets/dice-icons/';
   defaultDice = {
@@ -58,6 +58,7 @@ export class DiceService {
 
   constructor(utilsService: UtilsService) {
     this.utils = utilsService;
+    this.totalDices = 0;
   }
 
   defaultDicePool( poolSize:number=this.poolSize ):DiceEntity[] {
@@ -72,13 +73,15 @@ export class DiceService {
     let dicePool = [];
     for( let d = 0; d < poolSize; d++ ){
       let face = this.utils.getRandom(0, 5);
-      let dice = this.diceFaces[face]
+      let dice = {...this.diceFaces[face]};
+      this.totalDices++;
+      dice.id = 'dice--'+ this.totalDices
       dicePool.push( dice );
     }
     return dicePool;
   }
 
-  diceIndex( player:number, round:number, id:number ){
-    return 'dice-'+player+'-'+round+'-'+id;
+  diceIndex( player:number, round:number, throws:number, id:number ):string {
+    return 'dice-'+player+'-'+round+'-'+throws+'-'+id;
   }
 }

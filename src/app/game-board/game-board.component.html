@@ -9,7 +9,11 @@
   </div>
 
   <div *ngIf="gameOn" class="game-board__dice">
-    <app-dice *ngFor="let face of dicePool" [face]="face"></app-dice>
+    <app-dice *ngFor="let face of dicePool; let diceIndex = index"
+              [face]="face"
+              [id]="face.id"
+              (click)="lockDice(face, face.id )">
+    </app-dice>
   </div>
 
   <div *ngIf="gameOn" class="game-board__rounds">
@@ -18,31 +22,41 @@
     <p>Last Player: {{ gameData.lastPlayer }}</p>
     <p>Skull Island: {{ gameData.skullIsland }}</p>
     <p>Round Over: {{ gameData.roundOver }}</p>
-    <p>DicePool: {{ gameData.lockedDice | json }}</p>
+    <ul>
+      <li>Locked Dice:</li>
+      <li *ngFor="let d of gameData.lockedDice">{{ d.name }}</li>
+    </ul>
   </div>
 
   <div *ngIf="gameOn" class="game-board__actions">
-    <!-- {{ gameData | json }} -->
-    <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">Start</button>
+    <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">
+      <span class="info">Start</span>
+    </button>
 
-    <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll()">Next Player Roll</button>
+    <button *ngIf="gameData.player !== gameData.lastPlayer" class="ic_button" (click)="nextPlayerRoll()">
+      <span class="info">Next Player Roll</span>
+    </button>
 
     <button *ngIf="data.playerCanRoll()" class="ic_button" (click)="playerRoll()">
       <span *ngIf="gameData.skullIsland; else elseBlock">
         Roll for Skull Island
       </span>
-      <ng-template #elseBlock>Roll</ng-template>
+      <ng-template #elseBlock>
+        <span>Roll</span>
+      </ng-template>
 
     </button>
 
     <button *ngIf="! gameData.skullIsland && data.playerCanSettleDown()" class="ic_button" (click)="settleDown()">
-      <span *ngIf="gameData.roundOver; else elseBlock">
+      <span *ngIf="gameData.roundOver; else elseBlock" class="danger">
         Too much Skulls! Round over!
       </span>
-      <ng-template #elseBlock>Settle down</ng-template>
+      <ng-template #elseBlock>
+        <span class="warning">Settle down</span>
+      </ng-template>
     </button>
     <button *ngIf="gameData.skullIsland && gameData.roundOver" class="ic_button" (click)="settleDown()">
-      You're leaving Skull Island!
+      <span class="danger">You're leaving Skull Island!</span>
     </button>
   </div>
 </div>

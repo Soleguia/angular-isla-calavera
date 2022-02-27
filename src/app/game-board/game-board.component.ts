@@ -58,7 +58,7 @@ export class GameBoardComponent implements OnInit {
   firstRoll():void {
     this.data.addRound();
     this.revealCard();
-    this.roll(); // full dicepool
+    this.data.dicePool = this.roll(); // full dicepool
 
     this.checkSkullIslandOrRoundOver();
 
@@ -67,7 +67,7 @@ export class GameBoardComponent implements OnInit {
   // Player round's first roll
   nextPlayerRoll() {
     this.revealCard();
-    this.roll(); // full dicepool
+    this.data.dicePool = this.roll(); // full dicepool
     this.gameData.lastPlayer = this.gameData.player;
 
     this.checkSkullIslandOrRoundOver();
@@ -103,15 +103,17 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-  setLockedDice(){
-    let skulls = this.dicePool.filter( dice => dice.name == 'Skull' )
-    this.gameData.lockedDice = [ ...skulls ];
-  }
 
   roll( poolSize:number = this.dice.poolSize ):DiceEntity[] {
       let roll = this.dice.randomDicePool( poolSize );
-      this.dicePool = [ ...this.gameData.lockedDice, ...roll ];
-      this.setLockedDice();
+      // take skulls from roll
+      console.log({roll})
+      let skulls = roll.filter( dice => dice.name === 'Skull' );
+      let rollWithoutSkulls = roll.filter( dice => dice.name !== 'Skull' );
+      // add skulls to lockedDice
+      this.gameData.lockedDice = [ ...this.gameData.lockedDice, ...skulls ];
+
+      this.dicePool = [ ...this.gameData.lockedDice, ...rollWithoutSkulls ];
 
       this.data.setThrow({
         round: this.gameData.round,
@@ -193,7 +195,29 @@ export class GameBoardComponent implements OnInit {
     this.dicePool = this.dice.defaultDicePool();
   }
 
-  lockDice( dice:DiceEntity) {
-    this.gameData.lockedDice.push( dice );
+  lockDice( face:DiceEntity, diceIndex:string ) {
+    console.log('Locking?', {face, diceIndex})
+    if( ! this.gameData.skullIsland ){
+
+      let isLocked = this.gameData.lockedDice.find( dice => dice.id == diceIndex );
+      let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == diceIndex )!;
+
+      console.log( {poolDice} )
+      if( isLocked ){
+        // console.log('Out of lock!')
+        if( poolDice ){
+          poolDice.class = 'dice';
+        }
+
+        this.gameData.lockedDice = this.gameData.lockedDice.filter( dice => dice.id !== diceIndex );
+      } else {
+        // console.log('Lock it!')
+        if( poolDice ){
+          poolDice.class = 'dice locked';
+        }
+        this.gameData.lockedDice = [...this.gameData.lockedDice, poolDice];
+      }
+    }
   }
+
 }
