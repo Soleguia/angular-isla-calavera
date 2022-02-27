@@ -10,10 +10,25 @@
   display: block;
   width: 300px;
   height: 120px;
-  padding: 2rem;
-  font-size: 1.2rem;
-  white-space: nowrap;
-  background-color: lightblue;
-  border: 1px solid lightblue;
-  border-radius: .5rem;
+  background-color: transparent;
+  border: 0;
+  & > span {
+    display: block;
+    padding: 2rem;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    background-color: lightblue;
+    border: 1px solid lightblue;
+    border-radius: .5rem;
+
+    &.info {
+      background-color: lightskyblue;
+    }
+    &.warning {
+      background-color: lightsalmon;
+    }
+    &.danger {
+      background-color: lightcoral;
+    }
+  }
 }
