@@ -107,7 +107,6 @@ export class GameBoardComponent implements OnInit {
   roll( poolSize:number = this.dice.poolSize ):DiceEntity[] {
       let roll = this.dice.randomDicePool( poolSize );
       // take skulls from roll
-      console.log({roll})
       let skulls = roll.filter( dice => dice.name === 'Skull' );
       let rollWithoutSkulls = roll.filter( dice => dice.name !== 'Skull' );
       // add skulls to lockedDice
@@ -195,23 +194,17 @@ export class GameBoardComponent implements OnInit {
     this.dicePool = this.dice.defaultDicePool();
   }
 
-  lockDice( face:DiceEntity, diceIndex:string ) {
-    console.log('Locking?', {face, diceIndex})
-    if( ! this.gameData.skullIsland ){
-
+  lockDice( diceIndex:string ) {
+    if( ! this.gameData.skullIsland && ! this.isRoundOver() ){
       let isLocked = this.gameData.lockedDice.find( dice => dice.id == diceIndex );
       let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == diceIndex )!;
 
-      console.log( {poolDice} )
       if( isLocked ){
-        // console.log('Out of lock!')
         if( poolDice ){
           poolDice.class = 'dice';
         }
-
         this.gameData.lockedDice = this.gameData.lockedDice.filter( dice => dice.id !== diceIndex );
       } else {
-        // console.log('Lock it!')
         if( poolDice ){
           poolDice.class = 'dice locked';
         }

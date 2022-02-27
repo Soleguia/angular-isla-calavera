@@ -12,7 +12,7 @@
     <app-dice *ngFor="let face of dicePool; let diceIndex = index"
               [face]="face"
               [id]="face.id"
-              (click)="lockDice(face, face.id )">
+              (click)="lockDice( face.id )">
     </app-dice>
   </div>
 
