@@ -145,7 +145,6 @@ export class GameBoardComponent implements OnInit {
   countSkullDice( dicePool:DiceEntity[] ) {
     return dicePool.filter( dice => dice.name == 'Skull' ).length;
   }
-
   isSkullIsland( roll:DiceEntity[] ):boolean {
     let totalSkulls = this.countSkullDice( roll );
     totalSkulls += this.countSkullCards();
@@ -174,7 +173,6 @@ export class GameBoardComponent implements OnInit {
       this.data.players.map( (player, id) => {
         if( this.gameData.player != id ){
           player.points += skulls * -100;
-          console.log( {skulls} )
         }
       } )
     }
@@ -187,7 +185,33 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
+  setScore(){
+    let scoreDice = [...this.dicePool];
+    scoreDice = scoreDice.filter( dice => dice.name !== 'Skull' );
+    // extract distinct values from scoreDice
+    let distinctDice:DiceEntity[] = [];
+    scoreDice.forEach( dice => {
+      if( ! distinctDice.some( distinct => distinct.name == dice.name) ){
+        distinctDice = [ ...distinctDice, dice ];
+      }
+    });
+    // count every distinct
+    let playerScore = 0;
+    distinctDice.forEach( dice => {
+      let count = scoreDice.filter( score => score.name === dice.name ).length;
+      playerScore += this.utils.getScore( dice.name, count );
+    });
+
+    this.data.players[this.gameData.player].points += playerScore;
+    // ToDo: count how many dice are in combinations, if 8 then +500
+    // ToDo: check card effect
+    // ToDo: apply card effect
+  }
+
   settleDown(){
+    if( ! this.isRoundOver() ){
+      this.setScore();
+    }
     this.data.nextPlayer();
     this.data.nextRound();
     this.defaultCard();
