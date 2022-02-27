@@ -1,4 +1,6 @@
 export interface DiceEntity {
   name: string,
-  face: string
+  face: string,
+  class: string,
+  id: string
 }

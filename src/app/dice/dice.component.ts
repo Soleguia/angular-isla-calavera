@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DiceEntity } from '../model/dice-entity';
+import { DataService } from '../services/data.service';
 import { DiceService } from '../services/dice.service';
 import { UtilsService } from '../services/utils.service';
 
@@ -10,22 +11,28 @@ import { UtilsService } from '../services/utils.service';
 })
 export class DiceComponent implements OnInit {
 
-  
+
   currentDice:DiceEntity;
   utils: UtilsService;
   dice: DiceService;
+  data: DataService;
 
-  constructor(utilsService: UtilsService, diceService: DiceService) {
+  constructor(utilsService: UtilsService, dataService: DataService, diceService: DiceService) {
     this.utils = utilsService;
+    this.data = dataService;
     this.dice = diceService;
     this.currentDice = this.dice.defaultDice;
   }
+
+  @Input()
+  id:string;
 
   @Input()
   face:DiceEntity;
 
   ngOnInit(): void {
     this.currentDice = this.face;
+    this.face.id = this.id;
   }
 
   getDice(face:number):DiceEntity{
@@ -34,5 +41,4 @@ export class DiceComponent implements OnInit {
     }
     return this.dice.diceFaces[face];
   }
-
 }

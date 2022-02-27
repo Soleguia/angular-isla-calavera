@@ -11,14 +11,49 @@ export class DiceService {
 
   poolSize:number = 8;
   path = 'assets/dice-icons/';
-  defaultDice = { name: 'Default', face: this.path+'dice.svg'};
+  defaultDice = {
+    name: 'Default',
+    face: this.path+'dice.svg',
+    class: 'dice',
+    id: ''
+  };
   diceFaces = [
-    { name: 'Coin', face: this.path+'coin.svg'},
-    { name: 'Diamond', face: this.path+'diamond.svg'},
-    { name: 'Monkey', face: this.path+'monkey.svg'},
-    { name: 'Parrot', face: this.path+'parrot.svg'},
-    { name: 'Skull', face: this.path+'skull.svg'},
-    { name: 'Swords', face: this.path+'swords.svg'}
+    {
+      name: 'Coin',
+      face: this.path+'coin.svg',
+      class: 'dice',
+      id: ''
+    },
+    {
+      name: 'Diamond',
+      face: this.path+'diamond.svg',
+      class: 'dice',
+      id: ''
+    },
+    {
+      name: 'Monkey',
+      face: this.path+'monkey.svg',
+      class: 'dice',
+      id: ''
+    },
+    {
+      name: 'Parrot',
+      face: this.path+'parrot.svg',
+      class: 'dice',
+      id: ''
+    },
+    {
+      name: 'Skull',
+      face: this.path+'skull.svg',
+      class: 'dice',
+      id: ''
+    },
+    {
+      name: 'Swords',
+      face: this.path+'swords.svg',
+      class: 'dice',
+      id: ''
+    }
   ];
 
   constructor(utilsService: UtilsService) {
@@ -41,5 +76,9 @@ export class DiceService {
       dicePool.push( dice );
     }
     return dicePool;
+  }
+
+  diceIndex( player:number, round:number, id:number ){
+    return 'dice-'+player+'-'+round+'-'+id;
   }
 }
