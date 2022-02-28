@@ -12,7 +12,8 @@ export interface GameDataEntity {
   skullIsland:boolean,
   lockedDice: DiceEntity[],
   savedDice: DiceEntity[],
-  throws: ThrowEntity[]
+  throws: ThrowEntity[],
+  winner: number
 }
 
 export interface ThrowEntity {

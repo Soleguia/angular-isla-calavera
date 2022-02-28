@@ -117,6 +117,7 @@ export class GameBoardComponent implements OnInit {
   isAutoWin(){
     if ( this.check9win( 'Coin' ) || this.check9win( 'Diamond' ) ){
       this.winner = this.gameData.player;
+      this.gameData.winner = this.winner;
     }
   }
   check9win( face:string ):boolean {
@@ -161,7 +162,8 @@ export class GameBoardComponent implements OnInit {
           round: this.gameData.round,
           player: this.gameData.player,
           diceRoll: this.dicePool
-        } ]
+        } ],
+        winner: this.gameData.winner
       });
       return roll;
   }
@@ -338,6 +340,7 @@ export class GameBoardComponent implements OnInit {
 
     if( this.data.lastRound && this.data.countDownTurns == 0 ){
       this.winner = this.winnerByPoints();
+      this.gameData.winner = this.winner;
     }
   }
 
@@ -408,5 +411,9 @@ export class GameBoardComponent implements OnInit {
       }
     }
   }
+  restart(){
+    this.gameOn = false;
+    this.gameData = this.data.gameDataDefault();
 
+  }
 }

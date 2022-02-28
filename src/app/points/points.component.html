@@ -1,5 +1,5 @@
 <ul *ngIf="playersData.length > 0" class="players_pointsboard">
-  <li *ngFor="let player of playersData; let i = index" [class]="{'player_item':true, 'player--active': gameData.player == i}" id="player--{{i}}">
+  <li *ngFor="let player of playersData; let i = index" [class]="{'player_item':true, 'player--active': gameData.player == i, 'player--winner': i == gameData.winner}" id="player--{{i}}">
       <span class="player__name">{{ player.name }}</span>
       <span class="player__points">{{ player.points }}</span>
   </li>

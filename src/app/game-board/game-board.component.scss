@@ -41,6 +41,10 @@
       flex: 1 1 50%;
     }
   }
+  &__results {
+    grid-column: 2;
+    grid-row: 4;
+  }
   app-dice {
     flex: 1 1 25%;
     max-width: calc(25% - 5%);
