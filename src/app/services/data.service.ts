@@ -18,6 +18,7 @@ export class DataService {
 
   public gameOn:boolean = false;
   public lastRound:boolean = false;
+  public countDownTurns: number = 0;
   public lastPlayer:number = -1;
   public winPoints:number = 1000;
 

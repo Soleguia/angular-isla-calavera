@@ -69,17 +69,18 @@ export class GameBoardComponent implements OnInit {
 
   }
 
+  turnInit(){
+    if( this.data.lastRound ){
+        this.data.countDownTurns--;
+    }
+    this.revealCard();
+    this.data.dicePool = this.roll(); // full dicepool
+    this.gameData.lastPlayer = this.gameData.player;
+    this.checkSkullIslandOrRoundOver();
+  }
   // Player round's first roll
   nextPlayerRoll() {
-    if( this.data.lastRound && this.gameData.player == this.data.lastPlayer && this.gameData.player == this.winnerByPoints() ){
-        this.winner = this.winnerByPoints();
-    } else {
-      this.revealCard();
-      this.data.dicePool = this.roll(); // full dicepool
-      this.gameData.lastPlayer = this.gameData.player;
-
-      this.checkSkullIslandOrRoundOver();
-    }
+    this.turnInit();
   }
 
   currentPoolSize():number {
@@ -133,7 +134,7 @@ export class GameBoardComponent implements OnInit {
       skulls.forEach( dice => dice.class = 'dice skull locked' );
       let rollWithoutSkulls = roll.filter( dice => dice.name !== 'Skull' );
 
-      if( this.gameData.denySkull ){
+      if( this.gameData.denySkull && skulls.length > 0 ){
         skulls.length = skulls.length - 1;
         rollWithoutSkulls.push(this.dice.defaultDice);
         this.gameData.denySkull = false;
@@ -293,17 +294,8 @@ export class GameBoardComponent implements OnInit {
     this.data.players[this.gameData.player].points += playerScore;
     this.data.players[this.gameData.player].registry.push( playerScore );
 
-    // if is lastRound
-    if( this.data.lastRound ) {
-      if( this.gameData.player == this.data.lastPlayer )
-        if( this.gameData.player == this.winnerByPoints() ){
-          this.winner = this.gameData.player;
-        } else {
-          this.winner = this.winnerByPoints();
-        }
-    } else {
-      this.checkWinPoints();
-    }
+
+    this.checkWinPoints();
   }
 
   winnerByPoints(){
@@ -321,9 +313,16 @@ export class GameBoardComponent implements OnInit {
   checkWinPoints(){
     let currentPlayer = this.gameData.player;
     let currentPlayerPoints = this.data.players[currentPlayer].points
-    if( currentPlayerPoints >= this.data.winPoints ){
-      this.data.lastRound = true;
-      this.data.lastPlayer = currentPlayer;
+    if( this.data.lastRound ){
+      if( currentPlayerPoints > this.data.players[this.data.lastPlayer].points ){
+        this.data.countDownTurns++;
+      }
+    } else {
+      if( currentPlayerPoints >= this.data.winPoints ){
+        this.data.lastRound = true;
+        this.data.lastPlayer = currentPlayer;
+        this.data.countDownTurns = this.data.players.length - 1;
+      }
     }
   }
 
@@ -334,17 +333,12 @@ export class GameBoardComponent implements OnInit {
     this.data.nextPlayer();
     this.data.nextRound();
 
-    // if is lastRound
-    console.log( this.data.lastRound, this.gameData.player == this.data.lastPlayer, this.gameData.player !== this.winnerByPoints() )
-    if( this.data.lastRound && this.gameData.player == this.data.lastPlayer ) {
-      if( this.gameData.player !== this.winnerByPoints() ){
-        this.winner = this.winnerByPoints();
-      }
-    } else {
-      this.defaultCard();
-      this.dicePool = this.dice.defaultDicePool();
-    }
+    this.defaultCard();
+    this.dicePool = this.dice.defaultDicePool();
 
+    if( this.data.lastRound && this.data.countDownTurns == 0 ){
+      this.winner = this.winnerByPoints();
+    }
   }
 
   isLocked( face:DiceEntity ){

@@ -41,6 +41,7 @@
 
   <div *ngIf="data.lastRound">
     <h2>This is the EndGame</h2>
+    <p>Turns Countdown: {{ data.countDownTurns }}</p>
     <hr>
   </div>
   <div *ngIf="gameOn && winner < 0" class="game-board__actions">
