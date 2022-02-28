@@ -22,6 +22,7 @@ export class GameBoardComponent implements OnInit {
   gameData: GameDataEntity;
   gameData$:Observable<GameDataEntity>;
   utils: UtilsService;
+  winner:number;
 
   @Input()
   gameOn:boolean;
@@ -35,6 +36,7 @@ export class GameBoardComponent implements OnInit {
     this.currentCard = this.cards.cardDefault;
     this.dicePool = this.data.dicePool;
     this.gameData = this.data.gameData;
+    this.winner = -1;
   }
 
   ngOnInit(): void {
@@ -52,6 +54,9 @@ export class GameBoardComponent implements OnInit {
   revealCard():void {
     this.currentCard = this.cards.getCard();
     this.gameData.card = this.currentCard;
+    if( this.gameData.card.name == 'Sorceress' ){
+      this.gameData.denySkull = true;
+    }
   }
 
   // Game's first roll
@@ -66,15 +71,19 @@ export class GameBoardComponent implements OnInit {
 
   // Player round's first roll
   nextPlayerRoll() {
-    this.revealCard();
-    this.data.dicePool = this.roll(); // full dicepool
-    this.gameData.lastPlayer = this.gameData.player;
+    if( this.data.lastRound && this.gameData.player == this.data.lastPlayer && this.gameData.player == this.winnerByPoints() ){
+        this.winner = this.winnerByPoints();
+    } else {
+      this.revealCard();
+      this.data.dicePool = this.roll(); // full dicepool
+      this.gameData.lastPlayer = this.gameData.player;
 
-    this.checkSkullIslandOrRoundOver();
+      this.checkSkullIslandOrRoundOver();
+    }
   }
 
   currentPoolSize():number {
-    return this.dice.poolSize - this.gameData.lockedDice.length;
+    return this.dice.poolSize - this.gameData.lockedDice.length - this.gameData.savedDice.length;
   }
 
   playerRoll(){
@@ -103,16 +112,38 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
+  // AutoWin on 9 Coins or 9 Diamonds
+  isAutoWin(){
+    if ( this.check9win( 'Coin' ) || this.check9win( 'Diamond' ) ){
+      this.winner = this.gameData.player;
+    }
+  }
+  check9win( face:string ):boolean {
+    if( this.dicePool.filter( dice => dice.name == face ).length == 8 && this.gameData.card.name == face ){
+      return true;
+    }
+    return false;
+  }
 
   roll( poolSize:number = this.dice.poolSize ):DiceEntity[] {
       let roll = this.dice.randomDicePool( poolSize );
       // take skulls from roll
       let skulls = roll.filter( dice => dice.name === 'Skull' );
+
+      skulls.forEach( dice => dice.class = 'dice skull locked' );
       let rollWithoutSkulls = roll.filter( dice => dice.name !== 'Skull' );
+
+      if( this.gameData.denySkull ){
+        skulls.length = skulls.length - 1;
+        rollWithoutSkulls.push(this.dice.defaultDice);
+        this.gameData.denySkull = false;
+      }
       // add skulls to lockedDice
       this.gameData.lockedDice = [ ...this.gameData.lockedDice, ...skulls ];
 
-      this.dicePool = [ ...this.gameData.lockedDice, ...rollWithoutSkulls ];
+      this.dicePool = [ ...this.gameData.lockedDice, ...this.gameData.savedDice, ...rollWithoutSkulls ];
+
+      this.isAutoWin();
 
       this.data.setThrow({
         round: this.gameData.round,
@@ -121,8 +152,10 @@ export class GameBoardComponent implements OnInit {
         lastPlayer: this.gameData.lastPlayer,
         card: this.gameData.card,
         skulls: this.gameData.skulls,
+        denySkull: this.gameData.denySkull,
         skullIsland: this.gameData.skullIsland,
         lockedDice: this.gameData.lockedDice,
+        savedDice: this.gameData.savedDice,
         throws: [ ...this.gameData.throws, {
           round: this.gameData.round,
           player: this.gameData.player,
@@ -145,14 +178,16 @@ export class GameBoardComponent implements OnInit {
   countSkullDice( dicePool:DiceEntity[] ) {
     return dicePool.filter( dice => dice.name == 'Skull' ).length;
   }
+
   isSkullIsland( roll:DiceEntity[] ):boolean {
     let totalSkulls = this.countSkullDice( roll );
     totalSkulls += this.countSkullCards();
 
-    if( totalSkulls >= 4 ){
+    if( totalSkulls >= 4 && ! this.cards.isPirateShip( this.gameData.card ) ) {
+      this.gameData.denySkull = false;
       return true;
     }
-    return false;
+    return false
   }
 
   isRoundOver():boolean {
@@ -164,7 +199,7 @@ export class GameBoardComponent implements OnInit {
     return false;
   }
 
-  roundOverOnSkullIsland(){
+  roundOverOnSkullIsland():void {
     if( this.gameData.skullIsland ){
       let skulls = this.countSkullCards() + this.countSkullDice( this.gameData.lockedDice );
       if( this.gameData.card.name == 'Pirate' ){
@@ -172,7 +207,9 @@ export class GameBoardComponent implements OnInit {
       }
       this.data.players.map( (player, id) => {
         if( this.gameData.player != id ){
-          player.points += skulls * -100;
+          let score = skulls * -100;
+          player.points += score;
+          player.registry.push( score );
         }
       } )
     }
@@ -185,9 +222,17 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-  setScore(){
+  setScore(): void{
+    let playerScore = 0;
     let scoreDice = [...this.dicePool];
-    scoreDice = scoreDice.filter( dice => dice.name !== 'Skull' );
+    let bonusAllDice = 0;
+
+    if( this.isRoundOver() ){
+      scoreDice = this.gameData.savedDice;
+    } else {
+      scoreDice = scoreDice.filter( dice => dice.name !== 'Skull' && dice.name !== 'Default' );
+    }
+
     // extract distinct values from scoreDice
     let distinctDice:DiceEntity[] = [];
     scoreDice.forEach( dice => {
@@ -195,42 +240,175 @@ export class GameBoardComponent implements OnInit {
         distinctDice = [ ...distinctDice, dice ];
       }
     });
+
     // count every distinct
-    let playerScore = 0;
+    // check for Monkeys & Parrots card
+    let monkeysParrots = false;
+
     distinctDice.forEach( dice => {
-      let count = scoreDice.filter( score => score.name === dice.name ).length;
-      playerScore += this.utils.getScore( dice.name, count );
+      let count = 0;
+      if( this.gameData.card.name == 'Monkeys & Parrots' && ( dice.name == 'Monkey' || dice.name == 'Parrot' ) ){
+          if( ! monkeysParrots ){
+            count = scoreDice.filter( score => {
+              return score.name === 'Monkey' || score.name === 'Parrot'
+            } ).length;
+            monkeysParrots = true;
+          }
+      } else {
+        count = scoreDice.filter( score => {
+          return score.name === dice.name
+        } ).length;
+
+        if( dice.name == 'Coin' && this.gameData.card.name == 'Coin' ){
+          count += 1;
+        }
+        if( dice.name == 'Diamond' && this.gameData.card.name == 'Diamond' ){
+          count += 1;
+        }
+      }
+
+      let score = this.utils.getScore( dice.name, count );
+      if( score > 0 ){
+        bonusAllDice += count;
+      }
+      playerScore += score;
+
     });
 
+    // CARD: Pirate
+    if( this.gameData.card.name == 'Pirate' ){
+      playerScore *= 2;
+    }
+
+    // CARD: Pirate Ship
+    if( this.cards.isPirateShip( this.gameData.card ) ) {
+      playerScore = this.cards.scoreCardsPirateShip( this.gameData.card, scoreDice, playerScore );
+    }
+
+    // Bonus +500
+    if( scoreDice.length == 8 && bonusAllDice == 8 ){
+      playerScore += 500;
+    }
+
     this.data.players[this.gameData.player].points += playerScore;
-    // ToDo: count how many dice are in combinations, if 8 then +500
-    // ToDo: check card effect
-    // ToDo: apply card effect
+    this.data.players[this.gameData.player].registry.push( playerScore );
+
+    // if is lastRound
+    if( this.data.lastRound ) {
+      if( this.gameData.player == this.data.lastPlayer )
+        if( this.gameData.player == this.winnerByPoints() ){
+          this.winner = this.gameData.player;
+        } else {
+          this.winner = this.winnerByPoints();
+        }
+    } else {
+      this.checkWinPoints();
+    }
+  }
+
+  winnerByPoints(){
+    let maxPoints = 0;
+    let winner = -1;
+    this.data.players.forEach( (player, index) => {
+      if( player.points > maxPoints ) {
+        maxPoints = player.points;
+        winner = index;
+      }
+    });
+    return winner;
+  }
+
+  checkWinPoints(){
+    let currentPlayer = this.gameData.player;
+    let currentPlayerPoints = this.data.players[currentPlayer].points
+    if( currentPlayerPoints >= this.data.winPoints ){
+      this.data.lastRound = true;
+      this.data.lastPlayer = currentPlayer;
+    }
   }
 
   settleDown(){
-    if( ! this.isRoundOver() ){
-      this.setScore();
-    }
+
+    this.setScore();
+
     this.data.nextPlayer();
     this.data.nextRound();
-    this.defaultCard();
-    this.dicePool = this.dice.defaultDicePool();
+
+    // if is lastRound
+    console.log( this.data.lastRound, this.gameData.player == this.data.lastPlayer, this.gameData.player !== this.winnerByPoints() )
+    if( this.data.lastRound && this.gameData.player == this.data.lastPlayer ) {
+      if( this.gameData.player !== this.winnerByPoints() ){
+        this.winner = this.winnerByPoints();
+      }
+    } else {
+      this.defaultCard();
+      this.dicePool = this.dice.defaultDicePool();
+    }
+
   }
 
-  lockDice( diceIndex:string ) {
-    if( ! this.gameData.skullIsland && ! this.isRoundOver() ){
-      let isLocked = this.gameData.lockedDice.find( dice => dice.id == diceIndex );
-      let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == diceIndex )!;
+  isLocked( face:DiceEntity ){
+    return this.gameData.lockedDice.find( dice => dice.id == face.id );
+  }
+  isSaved( face:DiceEntity ){
+    return this.gameData.savedDice.find( dice => dice.id == face.id );
+  }
+
+  canLockDice( face:DiceEntity ){
+    return ! this.gameData.skullIsland
+            && ! this.isRoundOver()
+            && ! ( this.dicePool.filter( dice => dice.name == 'Default' ).length > 1 )
+            && face.name !== 'Default'
+            && face.name !== 'Skull';
+  }
+
+  saveDice( face:DiceEntity ) {
+    if( this.canLockDice( face ) ){
+      let isSaved = this.gameData.savedDice.find( dice => dice.id == face.id );
+      let savedDice:DiceEntity = this.dicePool.find( dice => dice.id == face.id )!;
+
+      if( isSaved ){
+        if( savedDice ){
+          savedDice.class = 'dice';
+        }
+        this.unSaveDice( savedDice );
+      } else {
+        if( savedDice ){
+          savedDice.class = 'dice saved';
+        }
+        if( this.isLocked( savedDice ) ){
+          this.unLockDice( savedDice );
+        }
+        this.gameData.savedDice = [...this.gameData.savedDice, savedDice];
+      }
+    }
+  }
+
+  unSaveDice( face:DiceEntity ){
+    this.gameData.savedDice = this.gameData.savedDice.filter( dice => dice.id !== face.id );
+  }
+  unLockDice( face:DiceEntity ){
+    this.gameData.lockedDice = this.gameData.lockedDice.filter( dice => dice.id !== face.id );
+  }
+
+
+  lockDice( face:DiceEntity ) {
+    // Can't lock dice on Skull Island , Round Over or Default View
+    if( this.canLockDice( face ) ){
+      let isLocked = this.gameData.lockedDice.find( dice => dice.id == face.id );
+      let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == face.id )!;
 
       if( isLocked ){
         if( poolDice ){
           poolDice.class = 'dice';
         }
-        this.gameData.lockedDice = this.gameData.lockedDice.filter( dice => dice.id !== diceIndex );
+        this.unLockDice( poolDice );
       } else {
         if( poolDice ){
           poolDice.class = 'dice locked';
+        }
+        if( this.isSaved( poolDice ) ){
+          this.unSaveDice( poolDice );
         }
         this.gameData.lockedDice = [...this.gameData.lockedDice, poolDice];
       }

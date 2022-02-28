@@ -8,8 +8,10 @@ export interface GameDataEntity {
   player: number,
   card: CardEntity,
   skulls:number,
+  denySkull:boolean,
   skullIsland:boolean,
   lockedDice: DiceEntity[],
+  savedDice: DiceEntity[],
   throws: ThrowEntity[]
 }
 

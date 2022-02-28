@@ -17,6 +17,9 @@ export class DataService {
   private playersData$:Subject<PlayerEntity[]> = new Subject<PlayerEntity[]>();
 
   public gameOn:boolean = false;
+  public lastRound:boolean = false;
+  public lastPlayer:number = -1;
+  public winPoints:number = 1000;
 
   public dice: DiceService;
   public cards: CardService;
@@ -37,8 +40,10 @@ export class DataService {
       lastPlayer: 0,
       card: this.cards.cardDefault,
       skulls: 0,
+      denySkull: false,
       skullIsland: false,
       lockedDice: [],
+      savedDice: [],
       throws: []
     }
     this.dicePool = this.dice.defaultDicePool();
@@ -58,7 +63,7 @@ export class DataService {
   }
 
   addPlayer( name:string ){
-    this.players = [ ...this.players, { name: name, points: 0 } ]
+    this.players = [ ...this.players, { name: name, points: 0, registry: [] } ]
     this.playersData$.next(this.players);
   }
 
@@ -83,7 +88,6 @@ export class DataService {
   }
   nextRound(){
     this.setThrow( this.gameData );
-
   }
 
   nextPlayer(){
@@ -100,6 +104,7 @@ export class DataService {
     this.gameData.skullIsland = false;
     this.gameData.roundOver = false;
     this.gameData.lockedDice = [];
+    this.gameData.savedDice = [];
     this.gameData$.next(this.gameData);
   }
 
@@ -110,7 +115,7 @@ export class DataService {
   }
 
   enoughPoolSize():boolean {
-    if( this.dice.poolSize - this.gameData.lockedDice.length > 1 ){
+    if( this.dice.poolSize - this.gameData.lockedDice.length - this.gameData.savedDice.length > 1 ){
       return true;
     }
     return false;
