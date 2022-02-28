@@ -72,7 +72,7 @@ export class DiceService {
   randomDicePool( poolSize:number=this.poolSize ):DiceEntity[] {
     let dicePool = [];
     for( let d = 0; d < poolSize; d++ ){
-      let face = this.utils.getRandom(0, 5);
+      let face = this.utils.getRandom(0, this.diceFaces.length - 1);
       let dice = {...this.diceFaces[face]};
       this.totalDices++;
       dice.id = 'dice--'+ this.totalDices
