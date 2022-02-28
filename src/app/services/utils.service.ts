@@ -15,7 +15,7 @@ export class UtilsService {
   getScore( name:string, amount:number ):number {
     let total = 0;
     if( amount == 8 ){
-      total += 4500;
+      total += 4000;
     } else if( amount == 7 ){
       total += 2000;
     } else if( amount == 6 ){
