@@ -20,7 +20,7 @@ export class DataService {
   public lastRound:boolean = false;
   public countDownTurns: number = 0;
   public lastPlayer:number = -1;
-  public winPoints:number = 1000;
+  public winPoints:number = 6000;
 
   public dice: DiceService;
   public cards: CardService;

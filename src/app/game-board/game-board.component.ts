@@ -412,8 +412,6 @@ export class GameBoardComponent implements OnInit {
     }
   }
   restart(){
-    this.gameOn = false;
-    this.gameData = this.data.gameDataDefault();
-
+    location.reload();
   }
 }
