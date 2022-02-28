@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CardEntity } from '../model/card-entity';
+import { DiceEntity } from '../model/dice-entity';
 import { UtilsService } from './utils.service';
 
 @Injectable({
@@ -135,4 +136,33 @@ export class CardService {
     return deck;
   }
 
+  isPirateShip( card: CardEntity ) {
+    return ['Pirate Ship 2', 'Pirate Ship 3', 'Pirate Ship 4'].some( cardName => cardName == card.name );
+  }
+
+  scoreCardsPirateShip( currentCard:CardEntity, scoreDice:DiceEntity[], playerScore:number ):number {
+    let swords = scoreDice.filter( dice => dice.name == 'Swords' ).length;
+    if( currentCard.name == 'Pirate Ship 2' ) {
+      if( swords >= 2 ) {
+        playerScore += 300;
+      } else {
+        playerScore = -300;
+      }
+    }
+    if( currentCard.name == 'Pirate Ship 3' ) {
+      if( swords >= 3  ) {
+        playerScore += 500;
+      } else {
+        playerScore = -500;
+      }
+    }
+    if( currentCard.name == 'Pirate Ship 4' ) {
+      if( swords >= 4  ) {
+        playerScore += 1000;
+      } else {
+        playerScore = -1000;
+      }
+    }
+    return playerScore;
+  }
 }
