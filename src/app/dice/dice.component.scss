@@ -7,6 +7,12 @@
   border-radius: 4px;
 
   &.locked {
-    background-color: red;
+    background-color: lightgreen;
+    &.skull {
+      background-color: lightsalmon;
+    }
+  }
+  &.saved {
+    background-color: lightyellow;
   }
 }

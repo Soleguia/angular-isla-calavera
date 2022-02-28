@@ -12,7 +12,10 @@
     <app-dice *ngFor="let face of dicePool; let diceIndex = index"
               [face]="face"
               [id]="face.id"
-              (click)="lockDice( face.id )">
+              (click)="lockDice( face )">
+              <button *ngIf="! gameData.skullIsland && ! gameData.roundOver && face.name !== 'Skull' && gameData.card.name == 'Treasure'" (click)="$event.stopPropagation(); saveDice( face )">
+                Save
+              </button>
     </app-dice>
   </div>
 
@@ -22,13 +25,25 @@
     <p>Last Player: {{ gameData.lastPlayer }}</p>
     <p>Skull Island: {{ gameData.skullIsland }}</p>
     <p>Round Over: {{ gameData.roundOver }}</p>
-    <ul>
-      <li>Locked Dice:</li>
-      <li *ngFor="let d of gameData.lockedDice">{{ d.name }}</li>
-    </ul>
+    <div>
+      <h3>Locked Dice:</h3>
+      <ul>
+        <li *ngFor="let d of gameData.lockedDice">{{ d.name }}</li>
+      </ul>
+    </div>
+    <div *ngIf="gameData.card.name=='Treasure'">
+      <h3>Saved Dice:</h3>
+      <ul>
+        <li *ngFor="let d of gameData.savedDice">{{ d.name }}</li>
+      </ul>
+    </div>
   </div>
 
-  <div *ngIf="gameOn" class="game-board__actions">
+  <div *ngIf="data.lastRound">
+    <h2>This is the EndGame</h2>
+    <hr>
+  </div>
+  <div *ngIf="gameOn && winner < 0" class="game-board__actions">
     <button *ngIf="gameData.round < 1" class="ic_button" (click)="firstRoll()">
       <span class="info">Start</span>
     </button>
@@ -58,5 +73,8 @@
     <button *ngIf="gameData.skullIsland && gameData.roundOver" class="ic_button" (click)="settleDown()">
       <span class="danger">You're leaving Skull Island!</span>
     </button>
+  </div>
+  <div *ngIf="winner > -1">
+    <h2>The winner is... {{ data.players[winner].name }}</h2>
   </div>
 </div>
