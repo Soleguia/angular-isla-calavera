@@ -1,4 +1,5 @@
 export interface PlayerEntity {
   name: string,
-  points: number
+  points: number,
+  registry: number[]
 }
