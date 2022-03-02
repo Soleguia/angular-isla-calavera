@@ -2,11 +2,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: .25rem;
   border: 1px solid lightgrey;
   border-radius: 4px;
   cursor: pointer;
 
+  & img {
+    width: 100%;
+    object-fit: contain;
+  }
   &.locked {
     background-color: lightgreen;
     &.skull {
@@ -15,5 +19,15 @@
   }
   &.saved {
     background-color: lightyellow;
+  }
+}
+.dice {
+  width: 60px;
+  max-width: 100%;
+  height: 60px;
+}
+@media (min-width: 600px) {
+  .dice {
+    padding: .5rem;
   }
 }

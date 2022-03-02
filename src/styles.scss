@@ -8,16 +8,16 @@
 
 .ic_button {
   display: block;
-  width: 300px;
+  width: 250px;
   max-width: 80%;
-  height: 120px;
+  height: 70px;
   background-color: transparent;
   border: 0;
   cursor: pointer;
 
   & > span {
     display: block;
-    padding: 2rem;
+    padding: 1rem 2rem;
     font-size: 1.2rem;
     white-space: nowrap;
     background-color: lightblue;
