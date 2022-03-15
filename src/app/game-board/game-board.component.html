@@ -21,7 +21,7 @@
 
   <div *ngIf="gameOn" class="game-board__rounds">
     <p>Round: {{ gameData.round }}</p>
-    <p>Player: {{ data.players[gameData.player].name }}</p>
+    <p>Player: {{ playersData[gameData.player].name }}</p>
     <div>
       <h3>Locked Dice:</h3>
       <ul>
@@ -45,7 +45,7 @@
       <span class="info">Next Player Roll</span>
     </button>
 
-    <button *ngIf="data.playerCanRoll()" class="ic_button" (click)="playerRoll()">
+    <button *ngIf="playerCanRoll()" class="ic_button" (click)="playerRoll()">
       <span *ngIf="gameData.skullIsland; else elseBlock">
         Roll for Skull Island
       </span>
@@ -55,7 +55,7 @@
 
     </button>
 
-    <button *ngIf="! gameData.skullIsland && data.playerCanSettleDown()" class="ic_button" (click)="settleDown()">
+    <button *ngIf="! gameData.skullIsland && playerCanSettleDown()" class="ic_button" (click)="settleDown()">
       <span *ngIf="gameData.roundOver; else elseBlock" class="danger">
         Too much Skulls! Round over!
       </span>
@@ -68,11 +68,11 @@
     </button>
   </div>
 
-  <div *ngIf="data.lastRound" class="game-board__results">
+  <div *ngIf="isLastRound()" class="game-board__results">
     <h2>This is the EndGame</h2>
-    <p>Turns Countdown: {{ data.countDownTurns }}</p>
+    <p>Turns Countdown: {{ countDownTurns() }}</p>
     <div *ngIf="winner > -1">
-      <h2>The winner is... {{ data.players[winner].name }}</h2>
+      <h2>The winner is... {{ playersData[winner].name }}</h2>
       <hr>
       <button class="ic_button" (click)="restart()">
         <span class="info">Another game?</span>
