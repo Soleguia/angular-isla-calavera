@@ -131,10 +131,10 @@ export class DataService {
   playerCanRoll():boolean {
     return this.enoughPoolSize() && this.gameData.round > 0 && this.gameData.player === this.gameData.lastPlayer && !this.gameData.roundOver;
   }
-  playerCanSettleDown():number {
+  playerCanSettleDown():boolean {
     let player = this.gameData.player;
     let round = this.gameData.round;
-    return this.gameData.throws.filter( throwData => throwData.player == player && throwData.round == round ).length;
+    return !!this.gameData.throws.filter( throwData => throwData.player == player && throwData.round == round ).length;
   }
 
 }
