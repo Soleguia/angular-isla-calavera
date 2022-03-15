@@ -9,13 +9,8 @@ import { DataService } from '../services/data.service';
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent implements OnInit {
-  data:DataService;
-  cards:CardService;
 
-
-  constructor(dataService:DataService, cardsData:CardService) {
-    this.data = dataService;
-    this.cards = cardsData;
+  constructor( private data:DataService, private cards:CardService) {
   }
 
   @Input()

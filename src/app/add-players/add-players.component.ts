@@ -8,15 +8,10 @@ import { UtilsService } from '../services/utils.service';
   styleUrls: ['./add-players.component.scss']
 })
 export class AddPlayersComponent {
-  data:DataService;
   newName = '';
   addPlayerButtonDisabled:boolean = true;
-  private utils:UtilsService;
 
-  constructor( utilsService: UtilsService, dataService:DataService ){
-    this.utils = utilsService;
-    this.data = dataService;
-  }
+  constructor( private utils:UtilsService, private data:DataService ){}
 
   addPlayer( name:string ):void {
     if( name.length < 2){

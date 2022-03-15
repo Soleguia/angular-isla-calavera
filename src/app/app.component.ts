@@ -8,12 +8,9 @@ import { DataService } from './services/data.service';
 })
 export class AppComponent {
 
-  data:DataService;
   showContent:string = '';
 
-  constructor( dataService:DataService ){
-    this.data = dataService;
-  }
+  constructor( private data:DataService ){}
 
   initIC(show:string):void {
     this.data.setShowContent(show);

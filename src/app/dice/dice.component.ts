@@ -11,16 +11,9 @@ import { UtilsService } from '../services/utils.service';
 })
 export class DiceComponent implements OnInit {
 
-
   currentDice:DiceEntity;
-  utils: UtilsService;
-  dice: DiceService;
-  data: DataService;
 
-  constructor(utilsService: UtilsService, dataService: DataService, diceService: DiceService) {
-    this.utils = utilsService;
-    this.data = dataService;
-    this.dice = diceService;
+  constructor( private utils: UtilsService,  private dice: DiceService,  private data: DataService ) {
     this.currentDice = this.dice.defaultDice;
   }
 

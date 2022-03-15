@@ -11,15 +11,13 @@ import { DataService } from '../services/data.service';
 })
 export class PointsComponent implements OnInit {
 
-  data:DataService;
   playersData:PlayerEntity[] = [];
   playersData$:Observable<PlayerEntity[]>;
   gameData:GameDataEntity;
   gameData$:Observable<GameDataEntity>;
   currentPlayer:number
 
-  constructor(dataService:DataService) {
-    this.data = dataService
+  constructor( private data:DataService ) {
     this.gameData = this.data.gameData;
   }
 

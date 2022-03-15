@@ -10,13 +10,11 @@ import { DataService } from '../services/data.service';
 })
 export class GameComponent implements OnInit {
 
-  data:DataService;
   playersData:PlayerEntity[] = [];
   playersData$:Observable<PlayerEntity[]>;
   gameOn:boolean;
 
-  constructor(dataService:DataService) {
-    this.data = dataService
+  constructor( private data:DataService ) {
     this.gameOn = this.getGameStatus();
   }
 

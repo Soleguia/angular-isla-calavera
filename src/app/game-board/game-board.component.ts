@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { CardEntity } from '../model/card-entity';
 import { DiceEntity } from '../model/dice-entity';
 import { GameDataEntity } from '../model/game-data-entity';
+import { PlayerEntity } from '../model/player-entity';
 import { CardService } from '../services/card.service';
 import { DataService } from '../services/data.service';
 import { DiceService } from '../services/dice.service';
@@ -14,25 +15,19 @@ import { UtilsService } from '../services/utils.service';
   styleUrls: ['./game-board.component.scss']
 })
 export class GameBoardComponent implements OnInit {
-  data:DataService;
-  cards:CardService;
-  dice:DiceService;
   currentCard:CardEntity;
   dicePool:DiceEntity[];
   gameData: GameDataEntity;
   gameData$:Observable<GameDataEntity>;
-  utils: UtilsService;
+  playersData:PlayerEntity[] = [];
+  playersData$:Observable<PlayerEntity[]>;
   winner:number;
 
   @Input()
   gameOn:boolean;
 
 
-  constructor(utilsService: UtilsService, dataService:DataService, diceService:DiceService, cardsData:CardService) {
-    this.utils = utilsService;
-    this.data = dataService;
-    this.dice = diceService;
-    this.cards = cardsData;
+  constructor( private utils: UtilsService, private data:DataService, private dice:DiceService, private cards:CardService) {
     this.currentCard = this.cards.cardDefault;
     this.dicePool = this.data.dicePool;
     this.gameData = this.data.gameData;
@@ -41,9 +36,9 @@ export class GameBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameData$ = this.data.getGameData$();
-    this.gameData$.subscribe(gameData => {
-      this.gameData = gameData;
-    });
+    this.gameData$.subscribe(gameData => this.gameData = gameData );
+    this.playersData$ = this.data.getPlayers$();
+    this.playersData$.subscribe(playersData => this.playersData = playersData);
   }
 
   defaultCard():void {
@@ -78,6 +73,7 @@ export class GameBoardComponent implements OnInit {
     this.gameData.lastPlayer = this.gameData.player;
     this.checkSkullIslandOrRoundOver();
   }
+
   // Player round's first roll
   nextPlayerRoll() {
     this.turnInit();
@@ -87,6 +83,12 @@ export class GameBoardComponent implements OnInit {
     return this.dice.poolSize - this.gameData.lockedDice.length - this.gameData.savedDice.length;
   }
 
+  playerCanRoll():boolean {
+    return this.data.playerCanRoll();
+  }
+  playerCanSettleDown():boolean {
+    return this.data.playerCanSettleDown();
+  }
   playerRoll(){
     let currentPoolSize = this.currentPoolSize();
 
@@ -113,6 +115,12 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
+  isLastRound():boolean {
+    return this.data.lastRound;
+  }
+  countDownTurns():number {
+    return this.data.countDownTurns;
+  }
   // AutoWin on 9 Coins or 9 Diamonds
   isAutoWin(){
     if ( this.check9win( 'Coin' ) || this.check9win( 'Diamond' ) ){
