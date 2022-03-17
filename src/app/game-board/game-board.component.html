@@ -13,7 +13,7 @@
               [face]="face"
               [id]="face.id"
               (click)="lockDice( face )">
-              <button *ngIf="! gameData.skullIsland && ! gameData.roundOver && face.name !== 'Skull' && gameData.card.name == 'Treasure'" (click)="$event.stopPropagation(); saveDice( face )">
+              <button *ngIf="isTreasureCard( face )" (click)="$event.stopPropagation(); saveDice( face )">
                 Save
               </button>
     </app-dice>

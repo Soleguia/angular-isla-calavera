@@ -308,6 +308,10 @@ export class GameBoardComponent implements OnInit {
     this.checkWinPoints();
   }
 
+  isTreasureCard(face:DiceEntity):boolean {
+    return ! this.gameData.skullIsland && ! this.gameData.roundOver && face.name !== 'Skull' && this.gameData.card.name == 'Treasure';
+  }
+
   winnerByPoints(){
     let maxPoints = 0;
     let winner = -1;
