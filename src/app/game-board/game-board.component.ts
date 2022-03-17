@@ -308,10 +308,6 @@ export class GameBoardComponent implements OnInit {
     this.checkWinPoints();
   }
 
-  isTreasureCard(face:DiceEntity):boolean {
-    return ! this.gameData.skullIsland && ! this.gameData.roundOver && face.name !== 'Skull' && this.gameData.card.name == 'Treasure';
-  }
-
   winnerByPoints(){
     let maxPoints = 0;
     let winner = -1;
@@ -400,6 +396,11 @@ export class GameBoardComponent implements OnInit {
     this.gameData.lockedDice = this.gameData.lockedDice.filter( dice => dice.id !== face.id );
   }
 
+  isTreasureCard(face:DiceEntity):boolean {
+    return ! this.gameData.skullIsland && ! this.gameData.roundOver && face.name !== 'Skull' && this.gameData.card.name == 'Treasure';
+  }
+
+  // ToDo: Cuando sale la carta de Tesoro los dados en lugar de bloquearse, se salvan.
 
   lockDice( face:DiceEntity ) {
     // Can't lock dice on Skull Island , Round Over or Default View
