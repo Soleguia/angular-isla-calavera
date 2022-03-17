@@ -17,8 +17,8 @@
 
   & > span {
     display: block;
-    padding: 1rem 2rem;
-    font-size: 1rem;
+    padding: 1rem .25rem;
+    font-size: .85rem;
     white-space: normal;
     background-color: lightblue;
     border: 1px solid lightblue;
@@ -38,6 +38,7 @@
 
 @media (min-width: 600px ) {
   .ic_button {
+    padding: 1rem;
     & > span {
      font-size: 1.2rem;
     }

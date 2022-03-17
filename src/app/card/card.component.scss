@@ -1,12 +1,14 @@
 .card_wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-top: .5rem;
   margin-bottom: 1rem;
 }
 .card {
+  --swordsWidth: 20px;
+  $swordsWidth: var(--swordsWidth);
+
   position: relative;
   display: flex;
   justify-content: center;
@@ -15,12 +17,13 @@
   margin-bottom: 1rem;
   padding: 2rem 1rem;
   width: 100%;
-  max-width: 200px;
-  height: 300px;
+  max-width: 100px;
+  height: 140px;
   background-color: rgba(200,200,200,.3);
   border-radius: 1rem;
   box-shadow: 1px 1px 2px 0px lightseagreen;
   &__image {
+    flex: 1 1 100px;
     display: block;
     width: 100%;
     object-fit: contain;
@@ -28,9 +31,14 @@
     &[src*="swords.svg"] {
       position: absolute;
       top: 1rem;
-      width: 30px;
-      height: 30px;
+      width: $swordsWidth;
+      height: $swordsWidth;
     }
+  }
+  &__description {
+    flex: 1 0 auto;
+    padding: 1rem;
+    max-width: calc(100% - 100px);
   }
   &--monkey-parrot {
     &[src*="monkey.svg"] {
@@ -61,8 +69,6 @@
       left: 30%;
     }
   }
-  $swordsWidth: 30px;
-
   &--ship-2 {
     &[src*="swords.svg"]:nth-child(2) {
       left: calc( ( 50% - $swordsWidth ) / 2 );
@@ -95,5 +101,17 @@
     &[src*="swords.svg"]:nth-child(5) {
       left: calc( 75% + (( 25% - $swordsWidth ) / 2 ));
     }
+  }
+}
+
+@media (min-width: 600px) {
+  .card_wrapper {
+    flex-direction: column;
+  }
+
+  .card {
+    --swordsWidth: 30px;
+    max-width: 200px;
+    height: 300px;
   }
 }
