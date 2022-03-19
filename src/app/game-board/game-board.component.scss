@@ -67,9 +67,15 @@
 @media (min-width: 600px) {
   .game-board {
     padding: 2rem;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 40% 60%;
 
+    &__cards {
+      grid-column: 1 / span 2;
+      grid-row: 2;
+    }
     &__dice {
+      grid-column: 2;
+      grid-row: 2;
       gap: .5rem;
       padding: 1rem;
     }
