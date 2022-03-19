@@ -405,22 +405,36 @@ export class GameBoardComponent implements OnInit {
   lockDice( face:DiceEntity ) {
     // Can't lock dice on Skull Island , Round Over or Default View
     if( this.canLockDice( face ) ){
-      let isLocked = this.gameData.lockedDice.find( dice => dice.id == face.id );
-      let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == face.id )!;
+      if( this.isTreasureCard( face ) ){
+        let isSaved = this.gameData.savedDice.find( dice => dice.id == face.id );
+        let savedDice:DiceEntity = this.dicePool.find( dice => dice.id == face.id )!;
 
-      if( isLocked ){
-        if( poolDice ){
-          poolDice.class = 'dice';
+        if( isSaved ){
+          if( savedDice ){
+            savedDice.class = 'dice';
+          }
+          this.unSaveDice( savedDice );
+        } else {
+          if( savedDice ){
+            savedDice.class = 'dice saved';
+          }
+          this.gameData.savedDice = [...this.gameData.savedDice, savedDice];
         }
-        this.unLockDice( poolDice );
       } else {
-        if( poolDice ){
-          poolDice.class = 'dice locked';
+        let isLocked = this.gameData.lockedDice.find( dice => dice.id == face.id );
+        let poolDice:DiceEntity = this.dicePool.find( dice => dice.id == face.id )!;
+
+        if( isLocked ){
+          if( poolDice ){
+            poolDice.class = 'dice';
+          }
+          this.unLockDice( poolDice );
+        } else {
+          if( poolDice ){
+            poolDice.class = 'dice locked';
+          }
+          this.gameData.lockedDice = [...this.gameData.lockedDice, poolDice];
         }
-        if( this.isSaved( poolDice ) ){
-          this.unSaveDice( poolDice );
-        }
-        this.gameData.lockedDice = [...this.gameData.lockedDice, poolDice];
       }
     }
   }

@@ -13,9 +13,9 @@
               [face]="face"
               [id]="face.id"
               (click)="lockDice( face )">
-              <button *ngIf="isTreasureCard( face )" (click)="$event.stopPropagation(); saveDice( face )">
+              <!-- <button *ngIf="isTreasureCard( face )" (click)="$event.stopPropagation(); saveDice( face )">
                 Save
-              </button>
+              </button> -->
     </app-dice>
   </div>
 
