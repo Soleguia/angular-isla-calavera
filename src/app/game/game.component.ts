@@ -10,6 +10,7 @@ import { DataService } from '../services/data.service';
 })
 export class GameComponent implements OnInit {
 
+  showContent:string = '';
   playersData:PlayerEntity[] = [];
   playersData$:Observable<PlayerEntity[]>;
   gameOn:boolean;
@@ -23,6 +24,11 @@ export class GameComponent implements OnInit {
     this.playersData$.subscribe(playersData => this.playersData = playersData);
   }
 
+  initIC(show:string):void {
+    this.data.setShowContent(show);
+    this.showContent = this.data.getShowContent();
+  }
+  
   getGameStatus():boolean{
     return this.data.gameOn;
   }

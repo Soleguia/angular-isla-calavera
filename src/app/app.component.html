@@ -1,16 +1,20 @@
 <main>
-  <section class="init-ic" *ngIf="!showContent">
 
-    <div class="init-ic__button">
-      <button id="showpage--game" class="ic_button" (click)="initIC('game')">
-        <span>Nueva partida</span>
-      </button>
-    </div>
-  </section>
-
-  <section class="ic__content" *ngIf="showContent == 'game'">
-    <app-game></app-game>
-  </section>
+  <!-- This nav gives you links to click, which tells the router which route to use (defined in the routes constant in  AppRoutingModule) -->
+  <nav class="main-nav">
+    <ul>
+      <li>
+        <a routerLink="/game" routerLinkActive="active">
+          Juego
+        </a>
+      </li>
+      <li>
+        <a routerLink="/info" routerLinkActive="active">Info</a>
+      </li>
+    </ul>
+  </nav>
+  <!-- The routed views render in the <router-outlet>-->
+  <router-outlet></router-outlet>
 
 
 </main>

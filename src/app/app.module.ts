@@ -10,6 +10,7 @@ import { AddPlayersComponent } from './add-players/add-players.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameBoardComponent } from './game-board/game-board.component';
 import { DiceComponent } from './dice/dice.component';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { DiceComponent } from './dice/dice.component';
     GameComponent,
     AddPlayersComponent,
     GameBoardComponent,
-    DiceComponent
+    DiceComponent,
+    InfoComponent
   ],
   imports: [
     BrowserModule,

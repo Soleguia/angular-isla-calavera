@@ -8,13 +8,10 @@ import { DataService } from './services/data.service';
 })
 export class AppComponent {
 
-  showContent:string = '';
+  gameOn:boolean = false;
 
-  constructor( private data:DataService ){}
-
-  initIC(show:string):void {
-    this.data.setShowContent(show);
-    this.showContent = this.data.getShowContent();
+  constructor( private data:DataService ){
+    this.gameOn = this.data.gameOn;
   }
 
 }

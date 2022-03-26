@@ -1,10 +1,22 @@
+<section class="init-ic" *ngIf="!showContent">
 
+  <div class="init-ic__button">
+    <button id="showpage--game" class="ic_button" (click)="initIC('game')">
+      <span>Nueva partida</span>
+    </button>
+  </div>
+</section>
+
+<section class="ic__content" *ngIf="showContent == 'game'">
+  
   <app-add-players *ngIf="!gameOn"></app-add-players>
-
+  
   <app-game-board [gameOn]="gameOn"></app-game-board>
-
+  
   <div class="ic-button-start">
     <button *ngIf="!gameOn && playersData.length > 1" (click)="setGameOn(true)" class="ic_button">
       <span>Empezar partida</span>
     </button>
   </div>
+
+</section>
